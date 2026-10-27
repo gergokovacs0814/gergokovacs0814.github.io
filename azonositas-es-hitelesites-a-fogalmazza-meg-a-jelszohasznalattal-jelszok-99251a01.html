@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Azonosítás és hitelesítés: a. Fogalmazza meg a jelszóhasználattal, jelszókezeléssel kapcsolatos legfontosabb szabályokat, elvárásokat! b. Milyen tulajdon alapú azonosítási lehetőségeket, eszközöket ismer? c. Milyen tulajdonság alapú azonosítási lehetőségeket ismer?</title>
+<style>
+:root {
+    --bg: #f6f7f9;
+    --panel: #ffffff;
+    --ink: #1d2430;
+    --muted: #5a6472;
+    --accent: #2f5d8a;
+    --accent-soft: #e8eef6;
+    --border: #dfe4ea;
+    --code-bg: #f2f4f7;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+}
+.page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 16px 80px;
+}
+header.doc-header {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
+}
+header.doc-header h1 {
+    margin: 0 0 6px;
+    font-size: 1.9rem;
+    line-height: 1.25;
+}
+header.doc-header .subtitle {
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+article.doc-body {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 30px 34px 44px;
+}
+article.doc-body h1 { font-size: 1.7rem; margin-top: 1.4em; }
+article.doc-body h2 {
+    font-size: 1.4rem;
+    margin-top: 1.8em;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--accent-soft);
+}
+article.doc-body h3 { font-size: 1.15rem; margin-top: 1.5em; color: var(--accent); }
+article.doc-body h4 {
+    font-size: 1rem;
+    margin-top: 1.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+article.doc-body p { margin: 0.85em 0; }
+article.doc-body ul, article.doc-body ol { padding-left: 1.4em; }
+article.doc-body li { margin: 0.25em 0; }
+article.doc-body code {
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.92em;
+}
+article.doc-body pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+}
+article.doc-body pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+figure.diagram {
+    margin: 26px 0;
+    padding: 16px;
+    background: #fbfcfd;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+}
+figure.diagram img { max-width: 100%; height: auto; }
+figure.diagram figcaption {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+footer.doc-footer {
+    margin-top: 28px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+}
+@media (max-width: 640px) {
+    body { font-size: 16px; }
+    article.doc-body { padding: 20px 18px 30px; }
+    .page { padding: 18px 10px 60px; }
+}
+</style>
+</head>
+<body>
+    <div class="page">
+        <a href="Index.html">Main</a>
+    </div>
+<div class="page">
+<header class="doc-header">
+    <h1>Azonosítás és hitelesítés: a. Fogalmazza meg a jelszóhasználattal, jelszókezeléssel kapcsolatos legfontosabb szabályokat, elvárásokat! b. Milyen tulajdon alapú azonosítási lehetőségeket, eszközöket ismer? c. Milyen tulajdonság alapú azonosítási lehetőségeket ismer?</h1>
+    <div class="subtitle">Államvizsga tétel &mdash; interaktív tananyag</div>
+</header>
+<article class="doc-body">
+<h3>Azonosítás és hitelesítés fogalmának elkülönítése; a jelszavak minimális hosszának…</h3>
+<p>Az azonosítás és hitelesítés fogalmának elkülönítése alapvető fontosságú a digitális biztonság területén. Az azonosítás (identification) a felhasználó azonosítási folyamatát jelenti, amely során a rendszer megállapítja, ki a felhasználó a megadott bemeneti adatok (például felhasználónév vagy e-mail cím) alapján. Ezzel szemben a hitelesítés (authentication) annak igazolását jelenti, hogy a bemutatott entitás valóban az, akinek mondja magát, amelyhez különböző bizonyítékok (például jelszavak, tokenek vagy biometrikus adatok) ellenőrzése szükséges. Az azonosítás tehát önmagában nem elegendő a biztonságos hozzáféréshez, hiszen a felhasználó azonosítása után a hitelesítés következik, amely megerősíti a felhasználó identitását.</p>
+<p><figure class="diagram" data-diagram-index="0"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuKfCBialKd1BpSb8BAxAExmmv_1chgBKv9B4lFISL0MbeDIybEAgr28bXMek1GKDnwhylFpYmsjB3YyirbJGrRLJqF38B4dDIGMBhIpM12b25O6gog-gEhmmxV3A8h2gMYuK6o5gK0pdSW3Q37GW0000" /></figure></p>
+<p>A jelszavak minimális hosszának és összetettségének követelményei kulcsfontosságúak a biztonságos hitelesítési folyamatban. A NIST SP 800-63B-4 ajánlása szerint a jelszavak minimális hossza 8 karakter, míg a maximális hossznak legalább 64 karakternek kell lennie. Fontos megjegyezni, hogy a jelszavak összetettségére vonatkozóan nincsenek szigorú előírások, mint például a nagy- és kisbetűk, számok vagy speciális karakterek kötelező használata. A jelszavak erősségének ellenőrzése során a felhasználóknak lehetőségük van a választott jelszó erősségét becslő eszközök használatára, mint például a zxcvbn.</p>
+<p>A jelszavak tárolása és titkossága szintén kiemelt jelentőséggel bír. A jelszavakat soha nem szabad titkosított formában tárolni, mivel ez visszafejthető tárolást jelentene. A jelszavakat sózott hash formájában kell tárolni, amelyhez minden jelszóhoz egyedi, legalább 128 bit hosszúságú véletlen sót (salt) kell rendelni. A hash-eléshez ajánlott kulcsderivációs függvények (KDF) használata, mint például az Argon2id, bcrypt vagy PBKDF2, amelyek megfelelő munka faktort és iterációs számot alkalmaznak a jelszavak biztonságos tárolása érdekében. Például az Argon2id esetében a munka faktornak legalább 2 másodpercnek kell lennie, míg a bcrypt esetében a költségérték 10-12 között mozoghat.</p>
+<p>A jelszavak megosztása szigorúan tilos. Minden felhasználónak egyéni, auditálható identitással kell rendelkeznie, és a jelszót személyes titokként kell kezelni. A megosztott jelszavak használata számos kockázatot hordoz, például a credential stuffing támadások lehetőségét, ahol egy szolgáltató kiszivárgása láncreakciót indíthat el más rendszerekben. A megosztott jelszavak miatt a felelősség nem bizonyítható, ami komoly problémákat okozhat a biztonságos hozzáférés kezelésében.</p>
+<p>A jelszókezelési felelősségek és biztonsági szabályzatok kialakítása elengedhetetlen a biztonságos működéshez. A szabályzatnak tartalmaznia kell a hatókört, a célokat, a szerepeket és felelősségeket, valamint a jelszóhosszra és összetettségre vonatkozó előírásokat. Fontos, hogy a szabályzat részletezze a tárolási és titkossági követelményeket, a megosztási tilalmat, a rotációs és sürgősségi eljárásokat, valamint a többfaktoros hitelesítés (MFA) kötelezettségét. A szabályzatnak emellett tartalmaznia kell a naplózási és monitorozási elvárásokat, a tudatossági és oktatási kötelezettségeket, valamint az audit és felülvizsgálati ciklusokat.</p>
+<p>A jelszókezelési folyamatok során különös figyelmet kell fordítani az onboarding és offboarding eljárásokra, a jelszó-visszaállításra, valamint a sürgősségi rotációra. Az onboarding során ideiglenes jelszót kell biztosítani, amelyet a felhasználónak azonnal meg kell változtatnia. A jelszó-visszaállítás során biztosítani kell, hogy a felhasználó egy egyszer használatos, legalább 128 bit entrópiájú tokent kapjon, amely 15-60 percig érvényes.</p>
+<p>A jogi és szabványi háttér is fontos szerepet játszik a jelszókezelési szabályzatok kialakításában. A GDPR, a NIS2 irányelv, valamint a 2011. évi CLV. törvény és a 2023-as kiberbiztonsági törvény hatálya alá tartozó előírásoknak megfelelően a jelszókezelési eljárásoknak biztosítaniuk kell a megfelelő biztonságot és a felhasználói adatok védelmét.</p>
+<p>Összességében a jelszavak kezelése és védelme komplex feladat, amely alapos tervezést és folyamatos figyelmet igényel. A megfelelő azonosítás és hitelesítés, a jelszavak biztonságos tárolása, a megosztás tilalma, valamint a jól kidolgozott szabályzatok és eljárások mind hozzájárulnak a digitális biztonság növeléséhez.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a különbség az azonosítás és a hitelesítés között?<br />
+<strong>Válasz:</strong> Az azonosítás a felhasználó azonosítási folyamatát jelenti, míg a hitelesítés annak igazolását, hogy a bemutatott entitás valóban az, akinek mondja magát.</p>
+<p><strong>Kérdés:</strong> Milyen minimális hosszúságú jelszót ajánl a NIST SP 800-63B-4?<br />
+<strong>Válasz:</strong> A jelszavak minimális hossza 8 karakter.</p>
+<p><strong>Kérdés:</strong> Miért fontos a jelszavak sózott hash formában történő tárolása?<br />
+<strong>Válasz:</strong> A sózott hash tárolás megakadályozza a visszafejtést és a rainbow table támadásokat.</p>
+<h3>A jelszavak biztonságos kezelése: egyedi, véletlen jelszóalkotás, jelszómenedzser…</h3>
+<p>A jelszavak biztonságos kezelése elengedhetetlen a digitális biztonság szempontjából. A jelszavak megfelelő kezelése nemcsak a felhasználók adatait védi, hanem a rendszerek integritását is megőrzi. Az alábbiakban részletesen bemutatjuk a jelszavak biztonságos kezelésének legfontosabb aspektusait, beleértve az egyedi és véletlen jelszóalkotást, a jelszómenedzser használatát, a sózott és lassú hash-függvények alkalmazását, a plaintext tárolás tilalmát, a TLS-es továbbítást, valamint a hitelesítési események naplózását.</p>
+<h3>Egyedi és véletlen jelszóalkotás</h3>
+<p>A jelszavak biztonságának alapja az egyediség és a véletlenség. Minden felhasználónak egyedi, nem emberi kitalált jelszót kell használnia. A jelszavak generálásához ajánlott kriptográfiai minőségű véletlenszám-generátorokat (CSPRNG) alkalmazni, mint például a <code>secrets</code> modult Pythonban. A jelszavaknak legalább 64 bit (base64/hex, 16 karakter) entrópiával kell rendelkezniük, de a gyakorlatban a 128 bit ajánlott. Az emberi memorizálhatóság és a jelszavak komplexitása közötti egyensúly megteremtése érdekében a Diceware módszer is alkalmazható, amely 7776 szavas listából 6 szó kiválasztásával körülbelül 77,8 bit entrópiát biztosít.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a jelszavak generálásához ajánlott eszköz?<br />
+<strong>Válasz:</strong> Kriptográfiai minőségű véletlenszám-generátorok (CSPRNG).</p>
+<p><strong>Kérdés:</strong> Mekkora entrópiával kell rendelkeznie a jelszavaknak?<br />
+<strong>Válasz:</strong> Legalább 64 bit, de a 128 bit ajánlott.</p>
+<p><strong>Kérdés:</strong> Mi a Diceware módszer célja?<br />
+<strong>Válasz:</strong> Az emberi memorizálhatóság és a jelszavak komplexitása közötti egyensúly megteremtése.</p>
+<h3>Jelszómenedzserek használata</h3>
+<p>A jelszómenedzserek segítenek a jelszavak biztonságos tárolásában és kezelésében. A jelszómenedzser felépítése a következőképpen működik:</p>
+<ol>
+<li><strong>Master jelszó</strong>: A felhasználó egy mesterjelszót állít be, amely a jelszómenedzserhez való hozzáférést biztosít.</li>
+<li><strong>KDF alkalmazása</strong>: A mesterjelszót kulcsderivációs függvény (KDF) segítségével (például Argon2id vagy PBKDF2) hash-eljük, hogy létrehozzuk a mesterkulcsot.</li>
+<li><strong>Titkosított tárolás</strong>: A mesterkulcsot titkosítjuk, és a jelszavakat biztonságosan tároljuk (AES-256-GCM vagy XChaCha20-Poly1305) egy titkosított tárolóban (vault).</li>
+</ol>
+<p>A jelszómenedzserek általában zero-knowledge elvet alkalmaznak, ami azt jelenti, hogy a szolgáltató nem tudja visszafejteni a tárolt adatokat. A jelszómenedzser használata csökkenti a jelszavak megosztásának kockázatát, és lehetővé teszi a felhasználók számára, hogy biztonságosan kezeljék a jelszavaikat.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a jelszómenedzser fő funkciója?<br />
+<strong>Válasz:</strong> A jelszavak biztonságos tárolása és kezelése.</p>
+<p><strong>Kérdés:</strong> Milyen elvet alkalmaznak a jelszómenedzserek?<br />
+<strong>Válasz:</strong> Zero-knowledge elvet.</p>
+<p><strong>Kérdés:</strong> Mi a mesterjelszó szerepe a jelszómenedzserben?<br />
+<strong>Válasz:</strong> A mesterjelszó biztosítja a jelszómenedzserhez való hozzáférést.</p>
+<h3>Sózott, lassú hash-függvények</h3>
+<p>A jelszavak hash-eléséhez sózott, lassú hash-függvényeket kell használni. A só (salt) egy legalább 128 bit hosszú, véletlenszerűen generált érték, amelyet a jelszó hash-ével együtt tárolunk. A só célja, hogy megakadályozza a rainbow table támadásokat és az azonos jelszavak könnyű azonosítását. A hash-eléshez javasolt algoritmusok közé tartozik:</p>
+<ul>
+<li><strong>Argon2id</strong>: A legújabb és legbiztonságosabb hash-függvény, amely memóriaigényes és időigényes. Az OWASP ajánlása szerint a minimum paraméterek: memória = 19 MiB, iterációk = 2, párhuzamos lane-ek = 1.</li>
+<li><strong>bcrypt</strong>: Széles körben használt, de nem memóriaigényes. A költségérték (cost) minimuma 10, javasolt értéke 12.</li>
+<li><strong>PBKDF2</strong>: Szintén elterjedt, de nem memóriaigényes. A javasolt iterációs szám 600 000.</li>
+</ul>
+<p>A hash-elés során fontos, hogy a hash-t és a sót külön tároljuk, és a hash-elt jelszót soha ne tároljuk plaintext formában.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a só (salt) szerepe a jelszavak hash-elésében?<br />
+<strong>Válasz:</strong> Megakadályozza a rainbow table támadásokat és az azonos jelszavak könnyű azonosítását.</p>
+<p><strong>Kérdés:</strong> Melyik hash-függvényt ajánlja az OWASP?<br />
+<strong>Válasz:</strong> Argon2id.</p>
+<p><strong>Kérdés:</strong> Miért fontos a hash és a só külön tárolása?<br />
+<strong>Válasz:</strong> Hogy megakadályozzuk a jelszavak visszafejtését és a biztonsági kockázatokat.</p>
+<h3>Plaintext tárolás tilalma</h3>
+<p>A jelszavakat soha nem szabad plaintext formában tárolni. A plaintext tárolás lehetőséget ad a támadóknak a jelszavak egyszerű megszerzésére. A jelszavakat mindig hash-elni kell, és a hash-elés során alkalmazott algoritmusoknak biztosítaniuk kell, hogy a jelszavak visszafejthetőek ne legyenek. A plaintext tárolás tilalma kiterjed a naplózásra is; a jelszavakat nem szabad naplózni, e-mailben küldeni, vagy más formában tárolni, amely hozzáférhető lehet a támadók számára.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Miért tilos a jelszavakat plaintext formában tárolni?<br />
+<strong>Válasz:</strong> Mert lehetőséget ad a támadóknak a jelszavak egyszerű megszerzésére.</p>
+<p><strong>Kérdés:</strong> Mit kell tenni a jelszavakkal a plaintext tárolás helyett?<br />
+<strong>Válasz:</strong> A jelszavakat hash-elni kell.</p>
+<p><strong>Kérdés:</strong> Miért fontos, hogy a jelszavakat ne naplózzuk?<br />
+<strong>Válasz:</strong> Mert a naplózás lehetőséget adhat a támadóknak a jelszavak megszerzésére.</p>
+<h3>TLS-es továbbítás</h3>
+<p>A TLS (Transport Layer Security) protokoll biztosítja a jelszavak biztonságos továbbítását az interneten. A TLS 1.3 verziója kötelező, míg a régebbi verziókat (TLS 1.0/1.1) és gyenge titkosítási algoritmusokat el kell kerülni. A TLS biztosítja a titkosítást, az integritást és a hitelesítést, így a jelszavak védve vannak a lehallgatás és a manipuláció ellen.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a TLS protokoll fő feladata?<br />
+<strong>Válasz:</strong> A jelszavak biztonságos továbbítása az interneten.</p>
+<p><strong>Kérdés:</strong> Melyik TLS verziót kell kötelezően használni?<br />
+<strong>Válasz:</strong> TLS 1.3.</p>
+<p><strong>Kérdés:</strong> Miért fontos a TLS használata?<br />
+<strong>Válasz:</strong> Mert biztosítja a titkosítást, az integritást és a hitelesítést.</p>
+<h3>Hitelesítési események naplózása</h3>
+<p>A hitelesítési események naplózása elengedhetetlen a biztonsági incidensek nyomon követéséhez. A naplózandó események közé tartozik a sikeres és sikertelen bejelentkezések, a jelszóváltoztatások, valamint a többfaktoros hitelesítési kihívások. A naplózás során fontos, hogy ne tároljunk érzékeny adatokat, például jelszavakat vagy jelszó-jellegű tokeneket. A naplóadatoknak strukturált formátumban kell lenniük, például JSON vagy CEF formátumban, hogy lehetővé tegyék a könnyű keresést és elemzést.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Miért fontos a hitelesítési események naplózása?<br />
+<strong>Válasz:</strong> Mert elengedhetetlen a biztonsági incidensek nyomon követéséhez.</p>
+<p><strong>Kérdés:</strong> Milyen eseményeket kell naplózni?<br />
+<strong>Válasz:</strong> Sikeres és sikertelen bejelentkezések, jelszóváltoztatások, többfaktoros hitelesítési kihívások.</p>
+<p><strong>Kérdés:</strong> Milyen formátumban kell a naplóadatoknak lenniük?<br />
+<strong>Válasz:</strong> Strukturált formátumban, például JSON vagy CEF formátumban.</p>
+<h3>Összegzés</h3>
+<p>A jelszavak biztonságos kezelése komplex feladat, amely alapos tervezést és figyelmet igényel. Az egyedi és véletlen jelszóalkotás, a jelszómenedzserek használata, a sózott és lassú hash-függvények alkalmazása, a plaintext tárolás tilalma, a TLS-es továbbítás, valamint a hitelesítési események naplózása mind hozzájárulnak a digitális biztonság növeléséhez. A megfelelő jelszókezelési gyakorlatok alkalmazásával a felhasználók és a rendszerek védelmét biztosíthatjuk a kiberfenyegetésekkel szemben.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a jelszavak biztonságos kezelésének fő célja?<br />
+<strong>Válasz:</strong> A felhasználói adatok és a rendszerek integritásának megőrzése.</p>
+<p><strong>Kérdés:</strong> Milyen módszereket említ a szöveg a jelszavak biztonságos kezelésére?<br />
+<strong>Válasz:</strong> Egyedi és véletlen jelszóalkotás, jelszómenedzserek használata, sózott és lassú hash-függvények alkalmazása, plaintext tárolás tilalma, TLS-es továbbítás, hitelesítési események naplózása.</p>
+<p><strong>Kérdés:</strong> Miért fontos a jelszóhasználati és jelszókezelési elvárások betartása?<br />
+<strong>Válasz:</strong> Mert elengedhetetlen a felhasználói adatok és a rendszerek integritásának megőrzéséhez.</p>
+<p>A biztonságos visszaállítás során a felhasználói fiók jelszavának visszaállítása biztonságos módon történik, például e-mailben küldött link vagy SMS kód segítségével. Amikor a felhasználó kéri a jelszó visszaállítását, a rendszer generál egy egyedi, időkorlátos tokent, amely lehetővé teszi a jelszó megváltoztatását. Ez a megközelítés biztosítja, hogy csak a jogosult felhasználó férhessen hozzá a fiókjához.</p>
+<p><figure class="diagram" data-diagram-index="1"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/LS-n2i8m40RWFKznTDAXk3j8BKL1S4bzWTWS6fgc9HS5ypOTEpYvkkN5J2qTElvyFtVy6JbXtQFHJ5IkjN10VHVaJUXr-B0kcgfK9uo3XAEHvD4c80ZuqlPIk6lelQA_5ZbZYqkGxe335aweoSVuL4HUHDBXxK9F2kemMDJOC3vtZsZGnWhWxOLIWMjhD1CNUVJBcA51uy90EC7owTofmrVBiGGhJ1kXzAOybskMnK5n-Gy0" /></figure></p>
+<p>A következő PHP kód példa bemutatja, hogyan lehet generálni egy visszaállítási tokent:</p>
+<pre><code class="language-php">function generateResetToken($userId) {
+    $token = bin2hex(random_bytes(16));
+    // Store token with expiration in database
+    saveTokenToDatabase($userId, $token);
+    return $token;
+}
+</code></pre>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Hogyan történik a jelszó visszaállítása?<br />
+<strong>Válasz:</strong> A jelszó visszaállítása biztonságos módon történik, például e-mailben küldött link vagy SMS kód segítségével.</p>
+<p><strong>Kérdés:</strong> Mi a szerepe a generált tokennek a jelszó visszaállításában?<br />
+<strong>Válasz:</strong> A generált token lehetővé teszi a jelszó megváltoztatását, és biztosítja, hogy csak a jogosult felhasználó férhessen hozzá a fiókjához.</p>
+<p><strong>Kérdés:</strong> Milyen funkciót mutat be a PHP kód példa?<br />
+<strong>Válasz:</strong> A PHP kód példa bemutatja, hogyan lehet generálni egy visszaállítási tokent, amelyet elmentenek az adatbázisba.</p>
+<h3>Fiókzárolás</h3>
+<p>A fiókzárolás egy olyan biztonsági intézkedés, amely ideiglenesen letiltja a felhasználói fiókot, ha a jelszó megadása során túl sok hibás próbálkozás történik. A rendszer nyilvántartja a sikertelen bejelentkezési kísérleteket, és ha a megadott limitet túllépik, a fiók automatikusan zárolásra kerül. Ez a megoldás megakadályozza a brute-force támadásokat, amelyek során a támadók megpróbálják kitalálni a jelszót.</p>
+<p><figure class="diagram" data-diagram-index="2"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/NO-z2iCm38HtFuN7b90No53YeMEWu0Iw5UE8OEeuGL8eeVJTArgN_cZyJdSdDSGEUPsYyj4HwPu0ZVVpcbZVb9Ofupo6L2oYNcSSQcqPGnftRz5VydwH4G816sQO5YQ1TvMpBVWL0szs8n5pVDMQqzbqtQ4zThRM8V4BknpmGIMZaxAVuEzpgsh_N_4qWzYOL0Dfa3yV" /></figure></p>
+<p>A következő JavaScript kód példa bemutatja, hogyan lehet megvalósítani a fiókzárolást:</p>
+<p>const MAX_ATTEMPTS = 5;
+let attempts = 0;</p>
+<p>function login(password) {
+    if (attempts &gt;= MAX_ATTEMPTS) {
+        lockAccount();
+        return;
+    }
+    if (checkPassword(password)) {
+        resetAttempts();
+    } else {
+        attempts++;
+    }
+}</p>
+<pre><code>
+#### Ellenőrző kérdések
+**Kérdés:** Mi történik, ha a felhasználó túl sok hibás jelszópróbálkozást végez?  
+**Válasz:** A fiók automatikusan zárolásra kerül.
+
+**Kérdés:** Milyen támadások ellen véd a fiókzárolás?  
+**Válasz:** A brute-force támadások ellen véd.
+
+**Kérdés:** Mi a JavaScript kód célja a fiókzárolás megvalósításában?  
+**Válasz:** A kód nyomon követi a sikertelen bejelentkezési kísérleteket és zárolja a fiókot, ha a megadott limitet túllépik.
+
+### Próbálkozáskorlátozás
+
+A próbálkozáskorlátozás célja a bejelentkezési próbálkozások számának korlátozása egy adott időszak alatt, hogy megelőzzük a brute-force támadásokat. A rendszer nyilvántartja a bejelentkezési kísérleteket, és időkorlátokat állít be, például 5 sikertelen próbálkozás után 15 perc várakozási időt. Ez a megközelítés segít csökkenteni a támadások sikerességét, miközben a felhasználói élményt is figyelembe veszi.
+
+#### Ellenőrző kérdések
+**Kérdés:** Mi a próbálkozáskorlátozás célja?  
+**Válasz:** A bejelentkezési próbálkozások számának korlátozása egy adott időszak alatt.
+
+**Kérdés:** Milyen időkorlátot állít be a rendszer 5 sikertelen próbálkozás után?  
+**Válasz:** 15 perc várakozási időt.
+
+**Kérdés:** Hogyan segít a próbálkozáskorlátozás a felhasználói élmény javításában?  
+**Válasz:** Csökkenti a támadások sikerességét, miközben figyelembe veszi a felhasználói élményt.
+
+### Többfaktoros hitelesítés (MFA)
+
+A többfaktoros hitelesítés (MFA) bevezetése jelentősen növeli a fiókok biztonságát. Az MFA legalább két különböző hitelesítési tényezőt igényel a felhasználó azonosításához, például egy jelszót és egy mobiltelefonra küldött kódot. Ez a megoldás megnehezíti a támadók számára a fiókokhoz való hozzáférést, még akkor is, ha a jelszót sikerül megszerezniük.
+
+
+<figure class="diagram" data-diagram-index="3"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuKhEIImkLl1rSrIevb800kt4qfACrBoIpEJ4abIDqkBK8Yk5K22foLNB1LKCui9K5m05olEBKgmKWakAClFIeQ8P-NcfVgMvII3TK0cWTf0jkhfs40Ei58fI2qipYrABkHnIyrA0RW40" /></figure>
+
+
+A következő Python kód példa bemutatja, hogyan lehet küldeni egy MFA kódot a felhasználónak:
+
+def send_mfa_code(user):
+    code = generate_random_code()
+    send_sms(user.phone_number, code)
+    return code
+</code></pre>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi az MFA célja?<br />
+<strong>Válasz:</strong> A fiókok biztonságának növelése legalább két különböző hitelesítési tényező használatával.</p>
+<p><strong>Kérdés:</strong> Milyen példákat említ az MFA a hitelesítési tényezőkre?<br />
+<strong>Válasz:</strong> Jelszó és mobiltelefonra küldött kód.</p>
+<p><strong>Kérdés:</strong> Mi történik, ha a támadók megszerzik a jelszót MFA használata esetén?<br />
+<strong>Válasz:</strong> Nehezebb hozzáférniük a fiókokhoz, mivel szükség van egy másik hitelesítési tényezőre is.</p>
+<h3>Rendszeres biztonsági ellenőrzés</h3>
+<p>A rendszeres biztonsági ellenőrzés során a rendszer biztonsági állapotát időszakosan felülvizsgálják. Ez magában foglalja a jelszópolitikák, a jelszókezelési eljárások és a hitelesítési mechanizmusok ellenőrzését. Az auditálás során a biztonsági eseményeket, a felhasználói viselkedést és a rendszer teljesítményét elemzik. A naplózás és a monitorozás lehetővé teszi a gyanús tevékenységek azonosítását, ezzel hozzájárulva a rendszer védelméhez.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a rendszeres biztonsági ellenőrzés célja?<br />
+<strong>Válasz:</strong> A rendszer biztonsági állapotának időszakos felülvizsgálata.</p>
+<p><strong>Kérdés:</strong> Milyen elemeket ellenőriznek a biztonsági auditálás során?<br />
+<strong>Válasz:</strong> Jelszópolitikák, jelszókezelési eljárások és hitelesítési mechanizmusok.</p>
+<p><strong>Kérdés:</strong> Hogyan segít a naplózás és a monitorozás a rendszer védelmében?<br />
+<strong>Válasz:</strong> Lehetővé teszi a gyanús tevékenységek azonosítását.</p>
+<h3>Összegzés</h3>
+<p>A jelszóhasználati és jelszókezelési elvárások betartása elengedhetetlen a digitális biztonság megőrzéséhez. Az új jelszó kényszerítése, az elavult hitelesítő adatok cseréje, a biztonságos visszaállítás, a fiókzárolás, a próbálkozáskorlátozás, a többfaktoros hitelesítés és a rendszeres biztonsági ellenőrzés mind hozzájárulnak a felhasználói adatok védelméhez és a rendszerek integritásának megőrzéséhez. A megfelelő jelszókezelési gyakorlatok alkalmazásával a felhasználók és a rendszerek védelmét biztosíthatjuk a kiberfenyegetésekkel szemben.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Miért fontos a jelszóhasználati és jelszókezelési elvárások betartása?<br />
+<strong>Válasz:</strong> Elengedhetetlen a digitális biztonság megőrzéséhez.</p>
+<p><strong>Kérdés:</strong> Milyen intézkedések segítik a felhasználói adatok védelmét?<br />
+<strong>Válasz:</strong> Fiókzárolás, próbálkozáskorlátozás, többfaktoros hitelesítés és rendszeres biztonsági ellenőrzés.</p>
+<p><strong>Kérdés:</strong> Hogyan járulnak hozzá a jelszókezelési gyakorlatok a kiberfenyegetések elleni védelemhez?<br />
+<strong>Válasz:</strong> A megfelelő gyakorlatok alkalmazásával védelmet biztosítanak a felhasználók és a rendszerek számára.</p>
+<h3>Tulajdon alapú azonosítás: birtokolt tokenek, OTP-papírok, TOTP- és HOTP-kódok, SMS- és…</h3>
+<p>A jelszó önmagában nem bizonyít semmit arról, hogy a képernyő előtt ülő személy valóban az, akinek mondja magát. Ezért a modern hitelesítési rendszerek egy második, teljesen más jellegű bizonyítékot is követelnek: valamit, amit a felhasználó <strong>birtokol</strong>. Ez a „birtokolt hitelesítő eszköz" (angolul <em>possession factor</em>) a NIST SP 800-63B terminológiájában az AAL1 szint alapját jelenti, AAL2-nél már egy tudásalapú tényezővel (jelszóval) kombinálódik, AAL3-nál pedig hard tokenhez (FIDO2-kulcs vagy PIV-kártya) társul biometria vagy PIN.</p>
+<p>Fontos, hogy a puszta birtoklás önmagában nem elég. Egy elveszett hitelesítő eszköz ugyanúgy veszélyes, mint egy kiszivárolt jelszó. Ezért a gyakorlatban két kiegészítő fogalom jelenik meg: a <strong>binding</strong> (kötés), vagyis az eszköz egy adott szolgáltatóhoz vagy hozzáférési ponthoz kötődése, és a <strong>proof of possession</strong> (PoP), amely azt igazolja, hogy a birtokló nemcsak az eszközzel rendelkezik, hanem annak titkát is ismeri. A következőkben végigvezetjük a birtoklási tényező gyakorlati megvalósulásait a legegyszerűbbtől a legkifinomultabbig.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Miért szükséges a birtokolt hitelesítő eszköz a modern hitelesítési rendszerekben?<br />
+<strong>Válasz:</strong> Mert a jelszó önmagában nem bizonyítja a felhasználó azonosítását.</p>
+<p><strong>Kérdés:</strong> Mi a különbség az AAL1, AAL2 és AAL3 szintek között?<br />
+<strong>Válasz:</strong> Az AAL1 csak birtokolt hitelesítőt igényel, az AAL2 tudásalapú tényezővel kombinálódik, míg az AAL3 hard tokenhez társul biometria vagy PIN.</p>
+<p><strong>Kérdés:</strong> Mi a binding és a proof of possession (PoP) szerepe a birtokolt hitelesítők esetében?<br />
+<strong>Válasz:</strong> A binding az eszköz szolgáltatóhoz kötődését jelenti, míg a PoP igazolja, hogy a birtokló ismeri az eszköz titkát.</p>
+<h4>OTP-papírok: a tisztán offline megoldás</h4>
+<p>A történelmi kezdet a RFC 2289-ben szabványosított S/KEY rendszer. A felhasználó 16 egymást követő, egyszer használatos jelszót kapott kinyomtatva; minden jelszó hat szóból állt egy rövid listából („CHIP TUNA SALMON MILK …"), a mögöttük rejtőző Lancom–Lamport lánc pedig MD4/MD5-alapú volt. A lényeg nem a modern kriptográfia, hanem a működés elve: a szerver a tárolt értéket minden használat után „elfogyasztja", a kliens pedig a következő láncértéket küldi el, amit a szerver visszafejt és összehasonlít. Nincs hálózati függés, és a lehallgatás sem ad hasznos információt, mert a kód egyszer elfogy.</p>
+<p>A hátrányai azonban hamar megmutatkoznak: nagy papírkészlet kell, a rendszer nem skálázódik, az emberi hiba (elveszett lap) fennakadást okoz, és nincs automatikus újratöltés. A papír alapú megoldás ma már inkább tanulságos előzmény, mintsem gyakorlatban használt módszer.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi az S/KEY rendszer alapelve?<br />
+<strong>Válasz:</strong> A szerver a tárolt értéket minden használat után „elfogyasztja", és a kliens a következő láncértéket küldi el.</p>
+<p><strong>Kérdés:</strong> Milyen hátrányai vannak az OTP-papíroknak?<br />
+<strong>Válasz:</strong> Nagy papírkészlet szükséges, nem skálázódik, emberi hiba okozhat fennakadást, és nincs automatikus újratöltés.</p>
+<p><strong>Kérdés:</strong> Miért nem használják ma már széles körben az OTP-papírokat?<br />
+<strong>Válasz:</strong> Mert inkább tanulságos előzményként tekintenek rá, mintsem gyakorlatban használt módszerként.</p>
+<h4>HOTP: a számláló alapú alapkód</h4>
+<p>Az RFC 4226 bevezette a HOTP (HMAC-based One-Time Password) algoritmust, amely a későbbi megoldások közös magja. A lényeg egy közös titok és egy számláló:</p>
+<pre><code>HOTP(K, C) = Trunc(HMAC-SHA-1(K, C))
+</code></pre>
+<p>ahol <code>C</code> egy 32 bites, monoton növekvő érték. A kliens és a szerver csak akkor van szinkronban, ha egyik sem ugrik át számlálóértéken – ez a HOTP legnagyobb törékenysége. A kód előállításának „trunkálása" (rövidítése) a HMAC kimenetéből egy 4 bites offsetet választ, és onnan 31 bites számot olvas ki, amelyet a kódtér méretére (alapértelmezetten 10^6) modulál. A szabvány D függeléke konkrét tesztvektorokat ad: számláló 0 → <code>755224</code>, 1 → <code>287082</code>, 2 → <code>359152</code>, …, 9 → <code>254676</code>. Ezeket a számokat bármely implementáció tesztelésére fel lehet használni.</p>
+<p>Mivel a kódtér 10^6, egyetlen találgatás valószínűsége 10^-6 – de ezt csak akkor lehet kihasználni, ha a szerver szigorúan betartja a rate limitet, a hibaszámlálást és az előretekintő ablakot (look-ahead window). A számláló visszafelé állítása (rollback) visszajátszhatóságot okoz, ezért a szervernek el kell tárolnia az utolsó elfogadott értéket.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a HOTP algoritmus alapelve?<br />
+<strong>Válasz:</strong> Közös titok és számláló használata.</p>
+<p><strong>Kérdés:</strong> Mi a HOTP legnagyobb törékenysége?<br />
+<strong>Válasz:</strong> A kliens és a szerver szinkronizálása, ha egyik sem ugrik át számlálóértéken.</p>
+<p><strong>Kérdés:</strong> Milyen valószínűsége van egyetlen találgatásnak a HOTP esetében?<br />
+<strong>Válasz:</strong> 10^-6.</p>
+<h4>TOTP: ugyanaz a kód, csak időlépcsővel</h4>
+<p>Az RFC 6238 a HOTP-ra építve egyszerűsített: a számláló helyére egy időlépcső kerül.</p>
+<pre><code>T = floor((Unix_time − T0) / X),  X = 30 s,  T0 = 0
+TOTP = HOTP(K, T)
+</code></pre>
+<p>Így a kliensnek nem kell számlálót tárolnia, csak a pontos időt ismernie. A szabvány 8 számjegyes tesztvektorokat is közöl (SHA-1, T=59 → <code>94287082</code>; SHA-256 → <code>46119246</code>; SHA-512 → <code>90693936</code>), amelyek jól mutatják, hogy a hash algoritmus megváltoztatása is módosítja a kimenetet.</p>
+<p>A gyakorlatban két problémát kell kezelni. Az egyik az <strong>óraeltérés</strong>: a szerver elfogadhat egy ±1 időablakot (look-ahead), ami körülbelül 90 másodpercnyi türelmet ad. A másik a <strong>visszajátszás</strong>: mivel ugyanaz a kód 30 másodpercenként ismétlődik, a szervernek <code>last_step</code> mezőt kell vezetnie, és a már elfogadott lépcsőket el kell utasítania. A titok Base32 kódolású (RFC 4648, padding nélkül), és a regisztráció rendszerint egy <code>otpauth://</code> URI-t QR-kódban ad át:</p>
+<pre><code>otpauth://totp/Issuer:user?secret=BASE32&amp;issuer=…&amp;algorithm=SHA1&amp;digits=6&amp;period=30
+</code></pre>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a TOTP alapelve?<br />
+<strong>Válasz:</strong> Az időlépcső használata a számláló helyett.</p>
+<p><strong>Kérdés:</strong> Milyen időablakot fogad el a szerver az óraeltérés miatt?<br />
+<strong>Válasz:</strong> ±1 időablakot (look-ahead).</p>
+<p><strong>Kérdés:</strong> Hogyan történik a TOTP kód generálása?<br />
+<strong>Válasz:</strong> A HOTP algoritmus használatával, ahol a számláló helyett egy időlépcső kerül.</p>
+<h4>SMS- és push-értesítések: a kényelem és a gyengeség</h4>
+<p>Az RFC 8228 („Relying Party OTP") írja elő, hogy az egyszer használatos kód a választható csatornán – SMS, MMS vagy hanghívás – érkezhet, a formátum pedig tartalmazza a szolgáltató nevét és a lejárati időt. A csatorna előnye, hogy bármilyen eszközzel működik; a hátránya, hogy a hálózat nem kriptográfiai: SS7- és SMS-átirányítás, SIM-swap, szolgáltatói lehallgatás, smishing, 160 karakteres korlát és díjas SMS jellemzi. A számkötés (number binding) részben ellensúlyozza a SIM-swapet, de ez nem kriptográfiai garancia.</p>
+<p>A <strong>push</strong> (APNs/FCM) megoldás lényegesen erősebb. A szerver „silent push" üzenetet küld, az eszköz pedig a helyi kulcsból számolja ki a kódot – Apple-en a Secure Enclave-ből, <code>SecAccessControl</code> biometrikus védelemmel, Androidon a Keystore-ből, <code>setUserAuthenticationRequired</code> beállítással. Mivel a kiszámításhoz a regisztrált eszközön lévő titkos kulcs kell, maga a kód bizonyítja a birtoklást (PoP). A legjobb gyakorlat a hibrid modell: szerveroldali telefonszám-ellenőrzés (E.164-hash) és eszközoldali PoP együttes használata.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Milyen csatornákon érkezhet az egyszer használatos kód?<br />
+<strong>Válasz:</strong> SMS, MMS vagy hanghívás.</p>
+<p><strong>Kérdés:</strong> Mi a push értesítések előnye a hagyományos SMS-hez képest?<br />
+<strong>Válasz:</strong> A push értesítések erősebb biztonságot nyújtanak, mivel a kód a helyi kulcsból számítódik ki.</p>
+<p><strong>Kérdés:</strong> Milyen problémákat okozhat az SMS alapú hitelesítés?<br />
+<strong>Válasz:</strong> SIM-swap, szolgáltatói lehallgatás, smishing és 160 karakteres korlát.</p>
+<h4>Hitelesítő alkalmazások</h4>
+<p>A hitelesítő alkalmazások (Google Authenticator, Aegis, Authy, 2FAS) lényegében titoktárolók: a Base32 TOTP-titkot és a szolgáltatói metaadatokat őrzik, a kódot pedig helyben számítják. A QR-kódos regisztráció kényelmes, de a kézi bevitel (a Base32 nagybetűk, 2–3 karakteres csoportokra bontva) mentőösvény. A biztonság a telefon zárolásától függ: a gyökérjogosultság (root/jailbreak) észlelése, a keystore használata és a biometrikus zárolás mind védőréteget jelent. Fontos kiegészítő a <strong>helyettesítő kódok</strong> (backup codes): egyszer használatos, szerveroldalon Argon2id vagy PBKDF2 segítségével hash-elt tokenek, amelyekből a tárolt hash nem fejthető vissza.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a hitelesítő alkalmazások fő funkciója?<br />
+<strong>Válasz:</strong> A Base32 TOTP-titkok és szolgáltatói metaadatok tárolása, valamint a kódok helyi számítása.</p>
+<p><strong>Kérdés:</strong> Milyen módszerekkel növelhető a hitelesítő alkalmazások biztonsága?<br />
+<strong>Válasz:</strong> Gyökérjogosultság észlelése, keystore használata és biometrikus zárolás.</p>
+<p><strong>Kérdés:</strong> Mi a helyettesítő kódok szerepe?<br />
+<strong>Válasz:</strong> Egyszer használatos tokenek, amelyek segítenek a hozzáférés helyreállításában, ha a fő hitelesítő eszköz elveszik.</p>
+<h4>NFC-kártyák és intelligens kártyák</h4>
+<p>A proximity kártyák világa az ISO/IEC 14443 (A/B típus, 13,56 MHz, 106 kbit/s) és az ISO/IEC 15693 (vicinity, 26,69 kbit/s) szabványokra épül. A <strong>MIFARE Ultralight/NTAG</strong> kártyák 7 bájtos UID-vel rendelkeznek, és ha a hitelesítés a UID-re épül, az gyakorlatilag csak egy olvasható azonosító – könnyen klónolható. Ezzel szemben a <strong>MIFARE DESFire EV1/EV2</strong> AES-128-as (CBC/CMAC) titkosítást, Secure Messaginget (RMA, ENC/MAC parancsok) és APDU-szintű hitelesítést használ; az EV2 már keystore-t és Dynamic Transaction Authenticationt (DTA) is támogat. A kommunikáció az ISO/IEC 7816-4 APDU-konvencióját követi: <code>00 A4 04 00</code> (SELECT), <code>00 20 00 00</code> (VERIFY), <code>00 84 00 00 08</code> (GET CHALLENGE), <code>00 88 00 00 08</code> (MUTUAL AUTHENTICATE).</p>
+<p>Az <strong>intelligens kártyák</strong> ennél tovább mennek: a <strong>PIV</strong> (NIST SP 800-73) 24 bites RID-je <code>A0 00 00 03 08</code>, General Authentication parancsa <code>00 87</code> (challenge/response), kulcstípusai között 3DES, RSA-1024/2048 és ECC P-224/P-256 található, PIN- és biometrikai hitelesítéssel, 30 próbálkozási limittel és Card Lock mechanizmussal. Az <strong>ePassport</strong> (ICAO 9303) a BAC/PACE kulcscserét, a Chip Authenticationt és a Passive Authenticationt (SOD-hash, Country Signing CA) ötvözi. Androidon a <strong>HCE</strong> szoftveres emuláció, míg az <strong>NFC SE / eUICC</strong> hardveres biztonsági elemet (Java Card / GlobalPlatform) jelent, távoli profilokkal (SM-DP+, LPA, ISD-P).</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Milyen szabványokra épülnek a proximity kártyák?<br />
+<strong>Válasz:</strong> ISO/IEC 14443 és ISO/IEC 15693.</p>
+<p><strong>Kérdés:</strong> Mi a különbség a MIFARE Ultralight/NTAG és a MIFARE DESFire EV1/EV2 kártyák között?<br />
+<strong>Válasz:</strong> Az Ultralight/NTAG kártyák könnyen klónolható az UID-re épülve, míg a DESFire EV1/EV2 erősebb titkosítást és hitelesítést használ.</p>
+<p><strong>Kérdés:</strong> Milyen funkciókat kínálnak az intelligens kártyák?<br />
+<strong>Válasz:</strong> PIN- és biometrikai hitelesítést, 30 próbálkozási limitet és Card Lock mechanizmust.</p>
+<h4>USB biztonsági kulcsok: a phishing-ellenállás csúcsa</h4>
+<p>A FIDO2/U2F kulcs (RFC 5869, CTAP2, W3C WebAuthn) a legbiztonságosabb birtoklási tényező. Regisztrációkor az RP-ID-hez kötött ECDSA P-256 kulcspárt generál, a hitelesítés pedig kriptográfiai kihívás-válasz. Az U2F-aláírás 65 bájt hosszú (<code>0x04 || R(32) || S(32)</code>, ECDSA-SHA-256), a kihívás 16 bájt. A WebAuthn <code>authenticatorData</code> mezője <code>rpIdHash(32) || flags(1) || signCount(4) || attestedCredentialData</code>, ahol a flag-ek a felhasználó jelenlétét (UP <code>0x01</code>), a felhasználó ellenőrzését (UV <code>0x04</code>), a biztonsági kulcs meglétét (BE <code>0x08</code>), a biometrikus jelenlétet (BS <code>0x10</code>), a hitelesítő adatok jelenlétét (AT <code>0x40</code>) és a kiterjesztett használatot (ED <code>0x80</code>) jelzik. A <code>clientDataJSON</code> a <code>type</code>, <code>challenge</code>, <code>origin</code> és <code>crossOrigin</code> mezőket tartalmazza – az <code>origin</code> ellenőrzése biztosítja, hogy a hitelesítés a valódi szolgáltatóhoz kötődjön, tehát a módszer phishing-ellenálló. A YubiKey egyébkén FIDO2 mellett PIV, OpenPGP és OATH (YubiOATH/YKMAN) funkciókat is egyesít.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a FIDO2/U2F kulcs fő előnye?<br />
+<strong>Válasz:</strong> A legbiztonságosabb birtoklási tényező, amely kriptográfiai kihívás-válasz mechanizmust használ.</p>
+<p><strong>Kérdés:</strong> Milyen információkat tartalmaz a WebAuthn <code>authenticatorData</code> mezője?<br />
+<strong>Válasz:</strong> rpIdHash, flags, signCount és attestedCredentialData.</p>
+<p><strong>Kérdés:</strong> Hogyan biztosítja a FIDO2/U2F kulcs a phishing-ellenállást?<br />
+<strong>Válasz:</strong> Az <code>origin</code> ellenőrzésével, amely biztosítja, hogy a hitelesítés a valódi szolgáltatóhoz kötődjön.</p>
+<h4>A challenge-response mögötti gondolat</h4>
+<p>A challenge-response mechanizmus lényege, hogy a felhasználó egy kihívásra válaszol, amelyet a rendszer generál. Ez a módszer növeli a biztonságot, mivel a válasz csak a kihívás ismeretében adható meg, így a támadók számára nehezebb a hitelesítési folyamat megkerülése. A kihívás és a válasz közötti kapcsolat titkosítással is védhető, ami tovább fokozza a rendszer biztonságát.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a challenge-response mechanizmus lényege?<br />
+<strong>Válasz:</strong> A felhasználó egy kihívásra válaszol, amelyet a rendszer generál.</p>
+<p><strong>Kérdés:</strong> Hogyan növeli a challenge-response mechanizmus a biztonságot?<br />
+<strong>Válasz:</strong> Mivel a válasz csak a kihívás ismeretében adható meg, így a támadók számára nehezebb a hitelesítési folyamat megkerülése.</p>
+<p><strong>Kérdés:</strong> Mivel védhető a kihívás és a válasz közötti kapcsolat?<br />
+<strong>Válasz:</strong> Titkosítással.</p>
+<p>Minden fenti módszer ugyanarra a mintára épül. <strong>Szimmetrikus</strong> esetben a válasz <code>R = HMAC-SHA-256(K, N || C)</code>, ahol <code>N</code> a nonce (egyszer használatú kihívás) és <code>C</code> a kontextus (felhasználóazonosító, munkamenet, művelet) – ezek kötik a választ egy konkrét kéréshez. <strong>Aszimmetrikus</strong> esetben (FIDO2, PIV) a szerver kihívást küld, az eszköz aláírja (ECDSA, RSA-PSS, EdDSA), és az ellenőrzés a nyilvános kulccsal történik; ilyenkor kölcsönös hitelesítésről (mutual auth) beszélünk. Az <strong>időalapú</strong> (TOTP) és <strong>számlálóalapú</strong> (HOTP) módszernél a kliens nem küld kihívást, a szerver pedig ablakban keres – innen a „kihívás nélküli" kihívás-válasz ellentmondásossága.</p>
+<p><figure class="diagram" data-diagram-index="4"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/PP11ImCn48Nl-HNlsEBc8jIRqhWj58eYZNYFoRGxcCrAahOKr_zkAijMxDo6DpFVcpTFsSIyRxsmtgG4VMfRof4jlWHAtM23UwoUL2trIidRsTraNU4PVOzwAhx5iARIrPwcUA28HC4bsCPuJs57WxYW0rj2ubr8c2phXLOLDbh95wqhB5tffyFe6qNUiZMPku0ZvmQV-tTVG1zqkXXuvPOUJI8tyclF539SHmcXoxz6hdoC9asqJHdaCoAuxdY-VCb2olxXpu__bH4kvWLImlm1" /></figure></p>
+<p>A visszajátszás elleni védelem három eszközt kombinál: egyszer használatú nonce, szerveroldali <code>used_challenges</code>/<code>last_counter</code> tábla, és a kihívások lejárati ideje (TTL). A gyakori hibamódok közül a challenge timeout (a kihívás lejár) ártalmatlan, a hibás aláírás hitelesítési hibát jelez, a kulcs lezárolása pedig támadási vagy hibás használat jele.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a szimmetrikus esetben a válasz képlete?<br />
+<strong>Válasz:</strong> R = HMAC-SHA-256(K, N || C)</p>
+<p><strong>Kérdés:</strong> Milyen módszerek esetén nem küld kihívást a kliens?<br />
+<strong>Válasz:</strong> Időalapú (TOTP) és számlálóalapú (HOTP) módszerek esetén.</p>
+<p><strong>Kérdés:</strong> Milyen három eszközt kombinál a visszajátszás elleni védelem?<br />
+<strong>Válasz:</strong> Egyszer használatú nonce, szerveroldali <code>used_challenges</code>/<code>last_counter</code> tábla, és a kihívások lejárati ideje (TTL).</p>
+<h4>Implementációs követelmények</h4>
+<p>A szerveroldali logika rövid, de szigorú. A Python-példa jól mutatja a lényeget: az ellenőrzés széles ablakban próbálja a lépcsőket, de a már elfogadott <code>last_step</code> értékeket kihagyja, és az összehasonlítás <code>hmac.compare_digest</code> segítségével, konstans időben történik.</p>
+<p>def verify(secret: bytes, token: str, window: int = 1, last_step: int = -1) -&gt; bool:
+    now = int(time.time()) // 30
+    for s in range(now - window, now + window + 1):
+        if s &lt;= last_step:          # visszajátszás ellen
+            continue
+        if hmac.compare_digest(hotp(secret, s), token):
+            return True
+    return False</p>
+<pre><code>
+A tárolóoldalon a titkokat soha nem szabad plaintext formában tartani: envelope encryptionnel, KMS- vagy HSM-kulcsokkal védjük őket, és a `last_step`/`sign_count` frissítést tranzakcióba foglaljuk.
+
+```sql
+CREATE TABLE totp_secret (
+  user_id      BIGINT PRIMARY KEY REFERENCES app_user(id),
+  enc_secret   BYTEA NOT NULL,      -- envelope encryption, KMS/HSM kulcs
+  algo         TEXT NOT NULL DEFAULT 'SHA1',
+  digits       SMALLINT NOT NULL DEFAULT 6,
+  period       SMALLINT NOT NULL DEFAULT 30,
+  last_step    BIGINT NOT NULL DEFAULT -1
+);
+</code></pre>
+<p>A FIDO2-kulcsok nyilvános részéhez külön tábla tartozik (<code>rp_id</code>, <code>credential_id</code>, <code>public_key</code>, <code>sign_count</code>, <code>aaguid</code>), a kihívásokhoz pedig lejáró, egyszer használatos <code>otp_challenge</code> rekordok. A szerveroldali kötelező minimum: konstans idejű összehasonlítás, 5 hibás próbálkozás után ideiglenes zárolás, titkok HSM-en/KMS-en, és audit napló (ki, mikor, IP, eszköz-azonosító).</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a célja a <code>last_step</code> érték kihagyásának az ellenőrzés során?<br />
+<strong>Válasz:</strong> A visszajátszás ellen védelmet nyújt.</p>
+<p><strong>Kérdés:</strong> Milyen formában nem szabad a titkokat tárolni?<br />
+<strong>Válasz:</strong> Plaintext formában.</p>
+<p><strong>Kérdés:</strong> Milyen minimum követelmények vannak a szerveroldalon?<br />
+<strong>Válasz:</strong> Konstans idejű összehasonlítás, 5 hibás próbálkozás után ideiglenes zárolás, titkok HSM-en/KMS-en, és audit napló.</p>
+<h4>Összegzés</h4>
+<p>A birtoklási tényező biztonsági szintje egyetlen skálán helyezkedik el: a papíralapú OTP offline és lehallgatással szemben ellenálló, de kezelhetetlen; a HOTP és TOTP egyszerű és szélesen támogatott, de a rövid kód és az időablak miatt online támadható; az SMS és push a kényelem oldalán nyer, mert nem igényel eszközt, ám a hálózati bizalmi modellje gyenge; az NFC-kártyák és az intelligens kártyák hardveres kulcskezeléssel és APDU-szintű kihívás-válaszszal erősebbek; a FIDO2/WebAuthn kulcsok pedig azzal a tulajdonsággal rendelkeznek, amelyet a többi módszer nélkülöz: a kriptográfiai kötés az eredeti szolgáltatóhoz, ami a phishing-ellenállás alapja. A helyes tervezés tehát nem egyetlen „legjobb" módszer kiválasztása, hanem a felhasználói kockázatnak megfelelő biztosítási szint (AAL) meghatározása és a visszajátszás, a klónozás és a lehallgatás elleni védelmek következetes kombinációja.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a papíralapú OTP előnye és hátránya?<br />
+<strong>Válasz:</strong> Előnye, hogy offline és lehallgatással szemben ellenálló, hátránya pedig, hogy kezelhetetlen.</p>
+<p><strong>Kérdés:</strong> Milyen támadásokkal szemben véd a FIDO2/WebAuthn kulcs?<br />
+<strong>Válasz:</strong> Phishing-ellenállás alapja, mivel kriptográfiai kötés van az eredeti szolgáltatóhoz.</p>
+<p><strong>Kérdés:</strong> Mi a helyes tervezés lényege a biztonsági módszerek kiválasztásakor?<br />
+<strong>Válasz:</strong> A felhasználói kockázatnak megfelelő biztosítási szint (AAL) meghatározása és a védelmek következetes kombinációja.</p>
+<h3>Tulajdonság alapú azonosítás: biometrikus ujjlenyomat-, írisz-, retina-, arc-, hang- és…</h3>
+<p>A biometrikus azonosítás egyre fontosabb szerepet játszik a digitális biztonság világában, ahol a felhasználók azonosítása és a hozzáférés-ellenőrzés kulcsfontosságú. A tulajdonság alapú azonosítás során az egyének egyedi fizikai vagy viselkedési jellemzőit használják az azonosításhoz. Ebben a fejezetben részletesen megvizsgáljuk a biometrikus azonosítás különböző formáit, beleértve az ujjlenyomat-, írisz-, retina-, arc-, hang- és írásmintákat, valamint a viselkedési biometria alkalmazását. Emellett foglalkozunk a mérési hibákkal, a hamis elfogadási és hamis elutasítási arányokkal, az élettességvizsgálattal és az adatvédelemmel.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a biometrikus azonosítás lényege?<br />
+<strong>Válasz:</strong> A biometrikus azonosítás során az egyének egyedi fizikai vagy viselkedési jellemzőit használják az azonosításhoz.</p>
+<p><strong>Kérdés:</strong> Milyen biometrikus azonosítási formákat említ a szöveg?<br />
+<strong>Válasz:</strong> Az ujjlenyomat-, írisz-, retina-, arc-, hang- és írásmintákat.</p>
+<p><strong>Kérdés:</strong> Milyen problémákkal foglalkozik a fejezet?<br />
+<strong>Válasz:</strong> A mérési hibákkal, a hamis elfogadási és hamis elutasítási arányokkal, az élettességvizsgálattal és az adatvédelemmel.</p>
+<p>A biometrikus azonosítás legelterjedtebb formája az ujjlenyomat-azonosítás. Az ujjlenyomatok egyedi mintázatai alapján történik, és az érzékeléshez optikai, ultrahangos vagy kapacitív érzékelők használatosak. Az érzékelt mintát digitális formátumban tárolják, kiemelve a jellemző pontokat, az úgynevezett minutiae-okat. Az ujjlenyomat-azonosítás előnyei közé tartozik a magas pontosság és a széleskörű alkalmazás, azonban hátrányai is vannak, mint például a fizikai sérülések hatása, valamint a hamis elfogadási arány (FAR) és a hamis elutasítási arány (FRR) problémái.</p>
+<p><figure class="diagram" data-diagram-index="5"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/LOwn3SCm30HxJS4-6xYoPmWym2CX4jaK2OXq4HdPFKfdjOVxmyyUg74KIG-1EwtR9gmVAuYbcPhdWDEPY6ubQw0XR9_e7ZNhwq-vDjvPsA-mgqTay22AzUwmVICg1lXDC-kpt_a1" /></figure></p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Milyen érzékelőket használnak az ujjlenyomat-azonosítás során?<br />
+<strong>Válasz:</strong> Optikai, ultrahangos vagy kapacitív érzékelőket.</p>
+<p><strong>Kérdés:</strong> Mi az ujjlenyomat-azonosítás legnagyobb hátránya?<br />
+<strong>Válasz:</strong> A fizikai sérülések hatása és a hamis elfogadási és elutasítási arányok problémái.</p>
+<p><strong>Kérdés:</strong> Mi a minutiae az ujjlenyomat-azonosításban?<br />
+<strong>Válasz:</strong> A jellemző pontok, amelyeket az érzékelt mintában kiemelnek.</p>
+<p>Az írisz-azonosítás egy másik biometrikus módszer, amely az írisz mintázatának elemzésére épít. Az írisz textúráját infravörös fény segítségével rögzítik, majd bináris kódokká alakítják, amelyeket adatbázisokban tárolnak. Az írisz-azonosítás előnye, hogy nagyon alacsony hamis elfogadási arányt mutat, mivel az írisz mintázatai rendkívül egyediek. Hátrányai közé tartozik a magas költség és a fényviszonyokra való érzékenység.</p>
+<p><figure class="diagram" data-diagram-index="6"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/LSqX3e0m3010lrVKymFKa6XUqC0o6hOkQOjWX6_n0Ju6EB1dpgkXs9gJ6nEgGY-ajQk5YvAXmku0caniMD5Q64o8usjodR6I1VrYI8MtidnfHXFyuU5yuEafRm00" /></figure></p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mivel rögzítik az írisz textúráját?<br />
+<strong>Válasz:</strong> Infravörös fény segítségével.</p>
+<p><strong>Kérdés:</strong> Mi az írisz-azonosítás legnagyobb előnye?<br />
+<strong>Válasz:</strong> Nagyon alacsony hamis elfogadási arány.</p>
+<p><strong>Kérdés:</strong> Milyen hátrányai vannak az írisz-azonosításnak?<br />
+<strong>Válasz:</strong> Magas költség és fényviszonyokra való érzékenység.</p>
+<p>A retina-azonosítás a retina véredényeinek mintázatát használja az azonosításhoz. Az infravörös fény segítségével rögzített retina képét digitális formátumban tárolják. Ez a módszer nagy biztonságot nyújt és alacsony hamis elfogadási arányt mutat, azonban a költségei magasak, és az érzékelés invazív jellegű.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi alapján történik a retina-azonosítás?<br />
+<strong>Válasz:</strong> A retina véredényeinek mintázata alapján.</p>
+<p><strong>Kérdés:</strong> Milyen előnyökkel rendelkezik a retina-azonosítás?<br />
+<strong>Válasz:</strong> Nagy biztonságot nyújt és alacsony hamis elfogadási arányt mutat.</p>
+<p><strong>Kérdés:</strong> Mi a retina-azonosítás hátránya?<br />
+<strong>Válasz:</strong> Magas költségek és invazív érzékelés.</p>
+<p>Az arc-azonosítás a felhasználók arcképének geometriai jellemzőit és textúráját elemzi. Képalkotó technológiák, például kamerák segítségével rögzítik az arc jellemzőit, amelyeket algoritmusokkal azonosítanak. Az arc-azonosítás előnye, hogy kényelmes és távolról is végrehajtható, de hátrányai közé tartozik, hogy különböző fényviszonyok, arckifejezések és maszkok befolyásolják az azonosítást.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Milyen technológiákat használnak az arc-azonosítás során?<br />
+<strong>Válasz:</strong> Képalkotó technológiákat, például kamerákat.</p>
+<p><strong>Kérdés:</strong> Mi az arc-azonosítás legnagyobb előnye?<br />
+<strong>Válasz:</strong> Kényelmes és távolról is végrehajtható.</p>
+<p><strong>Kérdés:</strong> Milyen tényezők befolyásolják az arc-azonosítást?<br />
+<strong>Válasz:</strong> Különböző fényviszonyok, arckifejezések és maszkok.</p>
+<p>A hang-azonosítás az egyén hangjának frekvencia- és időbeli jellemzőit elemzi. A hanghullámokat digitális jelekké alakítják, majd jellemzőket extrahálnak. Ez a módszer kényelmes, mivel nem igényel fizikai kontaktust, de hátrányai közé tartozik, hogy a zaj és az akusztikai környezet befolyásolhatja az azonosítást.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi alapján történik a hang-azonosítás?<br />
+<strong>Válasz:</strong> Az egyén hangjának frekvencia- és időbeli jellemzői alapján.</p>
+<p><strong>Kérdés:</strong> Mi a hang-azonosítás előnye?<br />
+<strong>Válasz:</strong> Kényelmes, mivel nem igényel fizikai kontaktust.</p>
+<p><strong>Kérdés:</strong> Milyen hátrányai vannak a hang-azonosításnak?<br />
+<strong>Válasz:</strong> A zaj és az akusztikai környezet befolyásolhatja az azonosítást.</p>
+<p>Az írásminta-azonosítás az egyén írásának jellemzői alapján történik. Az írásmintákat digitális formátumban rögzítik, és jellemző pontokat hasonlítanak össze. Ez a módszer különböző felhasználási területeken alkalmazható, például aláírás-ellenőrzésnél, de hátrányai közé tartozik a szubjektív értékelés és az alacsonyabb megbízhatóság.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Milyen jellemzők alapján történik az írásminta-azonosítás?<br />
+<strong>Válasz:</strong> Az egyén írásának jellemzői alapján.</p>
+<p><strong>Kérdés:</strong> Milyen területeken alkalmazható az írásminta-azonosítás?<br />
+<strong>Válasz:</strong> Például aláírás-ellenőrzésnél.</p>
+<p><strong>Kérdés:</strong> Mi a hátránya az írásminta-azonosításnak?<br />
+<strong>Válasz:</strong> Szubjektív értékelés és alacsonyabb megbízhatóság.</p>
+<p>A viselkedési biometria az egyének viselkedésének, például gépelési sebességük és egérmozgásuk elemzésére épít. A viselkedési mintákat folyamatosan figyelik és elemzik statisztikai modellek segítségével. Az előnye, hogy nehezen hamisítható, és folyamatos azonosítást tesz lehetővé, de hátrányai közé tartozik a magas hamis elutasítási arány és a környezeti hatások befolyásoló hatása.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi alapján történik a viselkedési biometria?<br />
+<strong>Válasz:</strong> Az egyének viselkedésének, például gépelési sebességük és egérmozgásuk elemzésére épít.</p>
+<p><strong>Kérdés:</strong> Mi a viselkedési biometria előnye?<br />
+<strong>Válasz:</strong> Nehezen hamisítható és folyamatos azonosítást tesz lehetővé.</p>
+<p><strong>Kérdés:</strong> Milyen hátrányai vannak a viselkedési biometriának?<br />
+<strong>Válasz:</strong> Magas hamis elutasítási arány és a környezeti hatások befolyásoló hatása.</p>
+<p>A biometrikus azonosítás során mérési hibák is előfordulhatnak, amelyek az azonosítási folyamat során bekövetkező eltérések a valós és a mért értékek között. Ezek a hibák rendszerhibák, környezeti hatások vagy technikai problémák következményeként léphetnek fel. A hamis elfogadási arány (FAR) azt mutatja meg, hogy a rendszer hány esetben fogad el egy nem jogosult felhasználót, míg a hamis elutasítási arány (FRR) azt, hogy hány esetben utasít el egy jogosult felhasználót.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mik a mérési hibák a biometrikus azonosítás során?<br />
+<strong>Válasz:</strong> Az azonosítási folyamat során bekövetkező eltérések a valós és a mért értékek között.</p>
+<p><strong>Kérdés:</strong> Mi a hamis elfogadási arány (FAR)?<br />
+<strong>Válasz:</strong> Azt mutatja meg, hogy a rendszer hány esetben fogad el egy nem jogosult felhasználót.</p>
+<p><strong>Kérdés:</strong> Mi a hamis elutasítási arány (FRR)?<br />
+<strong>Válasz:</strong> Azt mutatja meg, hogy hány esetben utasít el egy jogosult felhasználót.</p>
+<p>Az élettességvizsgálat célja annak biztosítása, hogy a bemeneti biometrikus minta élő egyéntől származik, nem pedig hamisítványtól. A módszerek közé tartoznak a fizikai reakciók, mint például a szemmozgás vagy a bőr hőmérséklete, valamint a viselkedési minták, mint például a hang vagy a mozgás. Fontos megjegyezni, hogy a mélyhamisítványok (deepfake) kihívást jelenthetnek a hagyományos élettességvizsgálati módszerek számára.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi az élettességvizsgálat célja?<br />
+<strong>Válasz:</strong> Annak biztosítása, hogy a bemeneti biometrikus minta élő egyéntől származik.</p>
+<p><strong>Kérdés:</strong> Milyen módszerek tartoznak az élettességvizsgálathoz?<br />
+<strong>Válasz:</strong> Fizikai reakciók, mint például a szemmozgás vagy a bőr hőmérséklete, valamint viselkedési minták.</p>
+<p><strong>Kérdés:</strong> Milyen kihívást jelenthetnek a mélyhamisítványok?<br />
+<strong>Válasz:</strong> Kihívást jelenthetnek a hagyományos élettességvizsgálati módszerek számára.</p>
+<p>Az adatvédelem szempontjából a biometrikus adatok védelme elengedhetetlen a jogosulatlan hozzáférés és a visszaélések ellen. A biometrikus adatok védelmét titkosítással, anonimizálással és adatminimalizálással lehet biztosítani. A jogi keretek, mint például a GDPR és a CCPA, szigorú előírásokat tartalmaznak a biometrikus adatok kezelésére vonatkozóan, különös figyelmet fordítva a személyes adatok védelmére.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Miért fontos a biometrikus adatok védelme?<br />
+<strong>Válasz:</strong> A jogosulatlan hozzáférés és a visszaélések ellen.</p>
+<p><strong>Kérdés:</strong> Milyen módszerekkel lehet biztosítani a biometrikus adatok védelmét?<br />
+<strong>Válasz:</strong> Titkosítással, anonimizálással és adatminimalizálással.</p>
+<p><strong>Kérdés:</strong> Milyen jogi keretek vonatkoznak a biometrikus adatok kezelésére?<br />
+<strong>Válasz:</strong> GDPR és CCPA.</p>
+<p>A biometrikus azonosítás tehát egy összetett, de rendkívül fontos terület, amely folyamatos fejlődésen megy keresztül. A különböző biometrikus módszerek előnyei és hátrányai, a mérési hibák, a hamis elfogadási és hamis elutasítási arányok, az élettességvizsgálat és az adatvédelem mind hozzájárulnak a biometrikus azonosítás hatékonyságához és biztonságához. A jövőbeni fejlesztések és kutatások célja, hogy ezen módszerek megbízhatóságát és biztonságát tovább növeljék, miközben figyelembe veszik a felhasználói élményt és az adatvédelmi szempontokat.</p>
+</article>
+<footer class="doc-footer">Generálva: 2026-10-23 21:53</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/dist/plantuml-encoder.min.js"></script>
+<script>
+(function () {
+    var server = "https://www.plantuml.com/plantuml/svg";
+    var diagrams = ["@startuml\nactor Felhasználó\nrectangle \"Rendszer\" {\n  (Azonosítás) --> (Hitelesítés)\n  (Hitelesítés) --> (Hozzáférés)\n}\nFelhasználó --> (Azonosítás)\n@enduml", "@startuml\nactor Felhasználó\nparticipant \"Rendszer\" as R\nparticipant \"Adatbázis\" as DB\n\nFelhasználó -> R : Jelszó visszaállítási kérelem\nR -> R : Generál egyedi token\nR -> DB : Token mentése\nR -> Felhasználó : Token küldése (e-mail/SMS)\n@enduml", "@startuml\nclass UserAccount {\n    +login(password: String)\n    +lockAccount()\n    +resetAttempts()\n}\n\nclass SecuritySystem {\n    -MAX_ATTEMPTS: int\n    -attempts: int\n    +trackAttempts()\n}\n\nUserAccount --> SecuritySystem : interacts\n@enduml", "@startuml\nclass MFA {\n    +authenticate(user: User)\n}\n\nclass User {\n    +password: String\n    +phoneNumber: String\n}\n\nMFA --> User : requires\n@enduml", "@startuml\nclass Symmetric {\n    + R = HMAC-SHA-256(K, N || C)\n}\n\nclass Asymmetric {\n    + Server sends challenge\n    + Device signs (ECDSA, RSA-PSS, EdDSA)\n    + Verification with public key\n}\n\nclass TimeBased {\n    + Client does not send challenge\n    + Server searches in window\n}\n\nSymmetric --|> Asymmetric\nSymmetric --|> TimeBased\n@enduml", "@startuml\nclass UjjlenyomatAzonositas {\n  +mintazatok: String\n  +erzekeles: String\n  +minutiae: String\n  +elonyok: String\n  +hatranyok: String\n}\n@enduml", "@startuml\nclass IriszAzonositas {\n  +mintazat: String\n  +rögzites: String\n  +elonyok: String\n  +hatranyok: String\n}\n@enduml"];
+
+    function renderWithEncoder(source, image) {
+        try {
+            if (window.plantumlEncoder && window.plantumlEncoder.encode) {
+                var encoded = window.plantumlEncoder.encode(source);
+                image.src = server + "/" + encoded;
+                return true;
+            }
+        } catch (e) {
+            /* fall back to the server side URL */
+        }
+        return false;
+    }
+
+    diagrams.forEach(function (source, index) {
+        var figure = document.querySelector(
+            'figure.diagram[data-diagram-index="' + index + '"]'
+        );
+        if (!figure) {
+            return;
+        }
+        var image = figure.querySelector("img");
+        var ok = renderWithEncoder(source, image);
+        if (!ok && image.getAttribute("data-fallback-src")) {
+            image.src = image.getAttribute("data-fallback-src");
+        }
+        image.onerror = function () {
+            figure.innerHTML =
+                '<figcaption>A diagram nem tölthető be (PlantUML szerver hiba).</figcaption>';
+        };
+    });
+})();
+</script>
+</body>
+</html>

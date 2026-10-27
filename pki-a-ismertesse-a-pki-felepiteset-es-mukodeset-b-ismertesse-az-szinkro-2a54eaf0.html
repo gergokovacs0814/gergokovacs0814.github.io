@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PKI a. Ismertesse a PKI felépítését és működését! b. Ismertesse az szinkron és aszinkron titkosítás közötti különbséget! c. Milyen feladatokra lehet használni a PKI infrastruktúrát? Mondjon gyakorlati példát!</title>
+<style>
+:root {
+    --bg: #f6f7f9;
+    --panel: #ffffff;
+    --ink: #1d2430;
+    --muted: #5a6472;
+    --accent: #2f5d8a;
+    --accent-soft: #e8eef6;
+    --border: #dfe4ea;
+    --code-bg: #f2f4f7;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+}
+.page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 16px 80px;
+}
+header.doc-header {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
+}
+header.doc-header h1 {
+    margin: 0 0 6px;
+    font-size: 1.9rem;
+    line-height: 1.25;
+}
+header.doc-header .subtitle {
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+article.doc-body {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 30px 34px 44px;
+}
+article.doc-body h1 { font-size: 1.7rem; margin-top: 1.4em; }
+article.doc-body h2 {
+    font-size: 1.4rem;
+    margin-top: 1.8em;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--accent-soft);
+}
+article.doc-body h3 { font-size: 1.15rem; margin-top: 1.5em; color: var(--accent); }
+article.doc-body h4 {
+    font-size: 1rem;
+    margin-top: 1.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+article.doc-body p { margin: 0.85em 0; }
+article.doc-body ul, article.doc-body ol { padding-left: 1.4em; }
+article.doc-body li { margin: 0.25em 0; }
+article.doc-body code {
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.92em;
+}
+article.doc-body pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+}
+article.doc-body pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+figure.diagram {
+    margin: 26px 0;
+    padding: 16px;
+    background: #fbfcfd;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+}
+figure.diagram img { max-width: 100%; height: auto; }
+figure.diagram figcaption {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+footer.doc-footer {
+    margin-top: 28px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+}
+@media (max-width: 640px) {
+    body { font-size: 16px; }
+    article.doc-body { padding: 20px 18px 30px; }
+    .page { padding: 18px 10px 60px; }
+}
+</style>
+</head>
+<body>
+     <div class="page">
+        <a href="Index.html">Main</a>
+    </div>
+<div class="page">
+<header class="doc-header">
+    <h1>PKI a. Ismertesse a PKI felépítését és működését! b. Ismertesse az szinkron és aszinkron titkosítás közötti különbséget! c. Milyen feladatokra lehet használni a PKI infrastruktúrát? Mondjon gyakorlati példát!</h1>
+    <div class="subtitle">Államvizsga tétel &mdash; interaktív tananyag</div>
+</header>
+<article class="doc-body">
+<h3>A PKI (Public Key Infrastructure) fogalma, célja és alapfogalmai: hitelesítési hatóság…</h3>
+<p>A modern biztonságos kommunikáció alapja az aszimmetrikus kriptográfia, amely megszünteti a titkos kulcscseréhez szükséges előzetes bizalmi csatorna problémáját: két fél akkor is biztonságosan cserélhet üzenetet, ha soha nem találkozott, és egyetlen titkos kulcsot sem osztott meg egymással. Ugyanakkor az aszimmetrikus megközelítés új problémát teremt: a nyilvános kulcsot a másik félnek el kell juttatni úgy, hogy biztos lehessen arról, hogy valóban a címzett kulcsa, és nem egy támadó által közvetített hamis kulcs. Ezt a problémát oldja meg a <strong>Public Key Infrastructure (PKI)</strong>, vagyis az a bizalmi és szolgáltatáskörnyezet, amelynek fő feladata a nyilvános kulcsok és a hozzájuk tartozó identitás közötti kötés létrehozása, hitelesítése, terjesztése, használhatóságának felügyelete és szükség esetén megszüntetése.</p>
+<p><figure class="diagram" data-diagram-index="0"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/FOun3i8m40Hxly8bY4z4T2WD3G-us2TomZbBTska2ENlk01lEJF5JWuojAs4LCWztkTR_8JOTud9cC1NqIpwF9r_b1fMLaZgRi0i3fEbWMVUVU2jgg3QmscH8jY7C7xNrxyzmiIQ-uSl" /></figure></p>
+<h4>1. A nyilvános és a titkos kulcs</h4>
+<p>A kulcspár két, matematikailag összekapcsolt kulcsból áll. A <strong>nyilvános kulcs</strong> szabadon terjeszthető: titkosítást végezhet vele, és segítségével ellenőrizheti egy másik fél által létrehozott aláírást. A <strong>titkos kulcs</strong> ezzel szemben titkosan tartandó: vele lehet aláírni (azaz a titkos kulcs birtokosa bizonyíthatja, hogy ő az aláíró) és vele lehet visszafejteni a nyilvános kulccsal titkosított adatot.</p>
+<p>Fontos tisztázni, hogy a nyilvános kulcsból <strong>nem állítható elő</strong> a titkos kulcs. A kettes kapcsolat nem „a nyilvános kulcs egy része" vagy „a nyilvános kulcs titkosított változata", hanem egy olyan matematikai struktúra, amelynek egyik irányú művelete könnyű, a fordított irányú viszont számításilag reménytelenül nehéz. Az <strong>RSA</strong> esetén például az <em>e</em> kitevővel végzett titkosítás gyors; a fordított művelet a megfelelő <em>d</em> kitevő megtalálása, ami gyakorlatban a nagy számok felbontásának nehézségére vezet. Az RSA tehát mindkét irányban „nehezebb" műveletet is kínál, de a rendszer biztonságát éppen a különbség adja.</p>
+<p>Az algoritmusok felsorolásánál is fontos a pontosság. Az RSA egyaránt használható titkosításra és aláírásra (a titkosításnál pl. OAEP, az aláírásnál PSS填充-pad variánsokkal). A <strong>DSA</strong> (Digital Signature Standard) ezzel szemben kizárólag <strong>aláírási</strong> algoritmus, titkosításra nem alkalmas; biztonsága a véges mezőkben vett diszkrét logaritmus nehézségén alapul. Az <strong>ECC</strong> nem egyetlen algoritmus, hanem egy <strong>kódcsalád</strong>: ugyanazon elliptikus görbe aritmetikájára épül az ECDSA (aláírás), az ECDH (kulcscsere) és az ECIES (titkosítás). Az ECC egyik fő előnye, hogy az RSA-nál lényegesen kisebb kulcsmérettel ér el azonos biztonsági szintet.</p>
+<pre><code class="language-python">from Crypto.PublicKey import RSA
+key = RSA.generate(2048)              # kulcspár generálása
+private_key = key.export_key()        # titkos kulcs: PEM formátumban, titkosan tárolandó
+public_key = key.publickey().export_key()  # nyilvános kulcs: ez kerül a tanúsítványba
+</code></pre>
+<p>A gyakorlatban a hitelesítendő fél a nyilvános kulcsból és a saját identitásáról szóló adatokból <strong>tanúsítvány-kérelmet (CSR)</strong> állít össze, ezt aláírja a titkos kulcsával, majd a hitelesítési hatóságnak benyújtja.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a különbség a nyilvános és a titkos kulcs között?<br />
+<strong>Válasz:</strong> A nyilvános kulcs szabadon terjeszthető és titkosítást végezhet, míg a titkos kulcs titkosan tartandó és aláírásra, valamint visszafejtésre használható.</p>
+<p><strong>Kérdés:</strong> Miért nem állítható elő a titkos kulcs a nyilvános kulcsból?<br />
+<strong>Válasz:</strong> Mert a kulcspár matematikai struktúrája olyan, hogy az egyik irányú művelet könnyű, míg a fordított irányú művelet számításilag nehéz.</p>
+<p><strong>Kérdés:</strong> Milyen algoritmusokat említ a szöveg a titkosításra és aláírásra?<br />
+<strong>Válasz:</strong> Az RSA, DSA és ECC algoritmusokat említi, ahol az RSA titkosításra és aláírásra is használható, a DSA csak aláírásra, míg az ECC egy kódcsalád, amely több funkciót is ellát.</p>
+<h4>2. A tanúsítvány</h4>
+<p>A tanúsítvány (digitális证书) az a hitelesített elektronikus dokumentum, amely a nyilvános kulcsot az alany identitásához köti. Szabványos formátuma az <strong>X.509</strong>, amely ASN.1/DER kódolással épül fel.</p>
+<pre><code>Certificate {
+  tbsCertificate: TBSCertificate {
+    version: v3,
+    serialNumber: Integer,          # egyedi azonosító, a visszavonás kulcsa
+    signature: AlgorithmIdentifier,
+    issuer: Name,                   # a kibocsátó CA neve
+    validity: Validity { notBefore: Time, notAfter: Time },
+    subject: Name,                  # a tanúsítvány tulajdonosa
+    subjectPublicKeyInfo: SubjectPublicKeyInfo { algorithm, subjectPublicKey },
+    extensions: Extensions          # pl. keyUsage, basicConstraints, CRLDistPoints, AIA
+  },
+  signatureAlgorithm: AlgorithmIdentifier,
+  signature: BitString              # a CA aláírása a tbsCertificate-re
+}
+</code></pre>
+<p>A tanúsítvány <strong>nem tartalmaz titkos kulcsot</strong>; ez kulcskezelési szempontból fontos, hiszen a tanúsítvány nyilvánosan terjeszthető. Az aláírás mechanizmusa: a kibocsátó kiszámolja a <em>tbsCertificate</em> lenyomatát, majd azt aláírja a saját titkos kulcsával; bárki ellenőrizheti a CA nyilvános kulcsával, hogy a tanúsítvány valóban hiteles és未被 módosított.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a tanúsítvány szerepe a PKI rendszerben?<br />
+<strong>Válasz:</strong> A tanúsítvány a nyilvános kulcsot az alany identitásához köti, hitelesített elektronikus dokumentum formájában.</p>
+<p><strong>Kérdés:</strong> Milyen formátumban készülnek a tanúsítványok?<br />
+<strong>Válasz:</strong> A tanúsítványok szabványos formátuma az X.509, amely ASN.1/DER kódolással épül fel.</p>
+<p><strong>Kérdés:</strong> Miért fontos, hogy a tanúsítvány nem tartalmaz titkos kulcsot?<br />
+<strong>Válasz:</strong> Mert a tanúsítvány nyilvánosan terjeszthető, és a titkos kulcs védelmét biztosítani kell.</p>
+<h4>3. A hitelesítési hatóság (CA)</h4>
+<p>A CA az a <strong>bizalmadott harmadik fél</strong>, amely tanúsítványokat bocsát ki. Feladata az igazolt identitás és a nyilvános kulcs összekötése, a tanúsítvány aláírása, a kibocsátási és visszavonási szabályzatok (policy) megalkotása és betartatása.</p>
+<p>A bizalmi modell rendszerint <strong>hierarchikus</strong>: a legfelső szinten a <em>root CA</em> áll, amely önaláírt tanúsítvánnyal rendelkezik, és amelynek tanúsítványát a kliensek előre beépítik a bizalmi programba (trust store). Ő ad aláírást a köztes (intermediate) CA-knek, amelyek további CA-kat vagy végfelhasználói tanúsítványokat írnak alá. Aki tehát egy végfelhasználói tanúsítványt hitelesít, az egy <strong>tanúsítványláncot</strong> jár végig a bizalmi horgonyig. Előnye a központi, átlátható bizalom és a jól skálázható adminisztráció; hátrája a kompromittálás esetén kialakuló széles körű hatás, valamint a CA megbízhatóságába vetett teljes bizalom.</p>
+<p><figure class="diagram" data-diagram-index="1"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuKhEIImkLd1sLAZcKW02RONCukBILEVKefBCjCpan99K3KseH75cUXusyUIYL20t83ydCxaIBbYKMfQVZMPCBPT3QbuAq580" /></figure></p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a CA feladata a PKI rendszerben?<br />
+<strong>Válasz:</strong> A CA feladata a tanúsítványok kiadása, az identitás és a nyilvános kulcs összekötése, valamint a kibocsátási és visszavonási szabályzatok megalkotása.</p>
+<p><strong>Kérdés:</strong> Milyen struktúrában működik a CA?<br />
+<strong>Válasz:</strong> A CA bizalmi modellje rendszerint hierarchikus, ahol a legfelső szinten a root CA áll.</p>
+<p><strong>Kérdés:</strong> Mi a tanúsítványlánc szerepe?<br />
+<strong>Válasz:</strong> A tanúsítványlánc lehetővé teszi, hogy a végfelhasználói tanúsítványok hitelesítése a bizalmi horgonyig vezessen.</p>
+<h4>4. A regisztrációs hatóság (RA)</h4>
+<p>Az RA a CA és a kérelmezők közötti <strong>hitelesített közvetítő (mediáló) bizalmi szerep</strong>. Nem ír alá tanúsítványokat a CA nevében, hanem a CA előírásai szerint:</p>
+<ul>
+<li>azonosítja és hitelesíti a kérelmezőt (személyi okmány, regisztráció, e-mail- vagy SMS-ellenőrzés, vállalati igazolás),</li>
+<li>összegyűjti és ellenőrzi az identitásra vonatkozó adatokat és a kulcspár-tulajdonságokat,</li>
+<li>jóváhagyja vagy elutasítja a kérelmet, majd a jóváhagyott kérést továbbítja a CA-nak kiállításra.</li>
+</ul>
+<p>Az RA maga is hitelesített entitás a CA felé (például külön tanúsítvánnyal vagy hitelesített csatornán), így a közvetítés nem csökkenti a bizalmi lánc erejét. Bevezetésének előnye a CA terhelésének csökkentése és a helyi, személyes azonosítás minőségének javítása; hátránya a plusz komplexitás és a hosszabb kiállítási idő.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi az RA szerepe a PKI rendszerben?<br />
+<strong>Válasz:</strong> Az RA a CA és a kérelmezők közötti hitelesített közvetítő, amely azonosítja és hitelesíti a kérelmezőt.</p>
+<p><strong>Kérdés:</strong> Milyen előnyei vannak az RA bevezetésének?<br />
+<strong>Válasz:</strong> Az RA bevezetésének előnye a CA terhelésének csökkentése és a helyi, személyes azonosítás minőségének javítása.</p>
+<p><strong>Kérdés:</strong> Mi a hátránya az RA használatának?<br />
+<strong>Válasz:</strong> A hátránya a plusz komplexitás és a hosszabb kiállítási idő.</p>
+<h4>5. A tanúsítvány-visszavonási lista (CRL)</h4>
+<p>A visszavonás kezeli azt a problémát, hogy egy érvényesnek kiállított tanúsítvány a kulcs kompromittálódása miatt használhatatlanná válhat. A CA a visszavont tanúsítványok <strong>sorszámát</strong>, visszavonási dátumát és indoklási kódját aláírt listában (CRL) teszi közzé, rendszerint a tanúsítvány <em>CRLDistributionPoints</em> kiterjesztésében megadott helyen. A lista tartalmazza a <em>thisUpdate</em> és <em>nextUpdate</em> időpontokat is, amelyek a frissességet jelzik. A kliens a CRL letöltésével ellenőrizheti a tanúsítvány érvényességét.</p>
+<p>A CRL gyengesége, hogy a lista teljes mérete a visszavonások számával nő (a <em>delta CRL</em> részleges frissítést próbál enyhíteni), és a válasz mindig csak a legutóbbi kiadás állapotát tükrözi: a kompromittálás és a közzététel közötti ablakban a tanúsítvány még „érvényesnek" látszik.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a CRL szerepe a PKI rendszerben?<br />
+<strong>Válasz:</strong> A CRL a visszavont tanúsítványok sorszámát, visszavonási dátumát és indoklási kódját tartalmazza, lehetővé téve a tanúsítványok érvényességének ellenőrzését.</p>
+<p><strong>Kérdés:</strong> Milyen problémát kezel a CRL?<br />
+<strong>Válasz:</strong> A CRL kezeli azt a problémát, hogy egy érvényes tanúsítvány a kulcs kompromittálódása miatt használhatatlanná válhat.</p>
+<p><strong>Kérdés:</strong> Mi a CRL gyengesége?<br />
+<strong>Válasz:</strong> A CRL gyengesége, hogy a lista mérete a visszavonások számával nő, és a válasz mindig csak a legutóbbi kiadás állapotát tükrözi.</p>
+<h4>6. Az OCSP</h4>
+<p>Az <strong>Online Certificate Status Protocol</strong> lehetővé teszi egy-egy tanúsítvány állapotának <strong>valós idejű lekérdezését</strong> anélkül, hogy a teljes CRL-t le kellene tölteni. A kliens OCSP-kérést küld a respondernek, amely a CertID-vel (kiállítónév-hash, kiállítókulcs-hash, sorszám) azonosítja a tanúsítványt, és aláírt választ ad vissza: <em>good</em>, <em>revoked</em> (az ok kóddal együtt) vagy <em>unknown</em>. A responder jogosultságát a tanúsítvány <em>Authority Information Access</em> kiterjesztése rögzíti; a válasz akár tanúsítványba ágyazva (OCSP stapling) is terjedhet.</p>
+<p>Két finomítást érdemes külön kezelni. Egyrészt a kérésben küldött <strong>nonce</strong> elsősorban a <strong>visszajátszást</strong> akadályozza meg: a responder köteles visszatükrözni, így egy korábbi válasz nem fogadható el új kérésre. Másrészt a valós idejű <em>lekérdezés</em> nem jelenti a válasz tényleges <em>frissességét</em>: a responder gyorsítótárazott, korábbi <em>thisUpdate</em> értékű választ is visszaadhat, ezért az ügyfélnek a válasz dátumát is ellenőriznie kell. További problémák a responder rendelkezésreállása (lágy hibakezelés esetén a kliens hajlamos lehet jóváhagyni az állapotlan tanúsítványt) és a naplózásból adódó <strong>adatvédelmi</strong> aggály: a lekérdezésekből látható, éppen melyik tanúsítványokkal foglalkozik valaki.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi az OCSP szerepe a PKI rendszerben?<br />
+<strong>Válasz:</strong> Az OCSP lehetővé teszi a tanúsítványok állapotának valós idejű lekérdezését anélkül, hogy a teljes CRL-t le kellene tölteni.</p>
+<p><strong>Kérdés:</strong> Milyen válaszokat adhat az OCSP responder?<br />
+<strong>Válasz:</strong> Az OCSP responder válaszai lehetnek: <em>good</em>, <em>revoked</em> (az ok kóddal együtt) vagy <em>unknown</em>.</p>
+<p><strong>Kérdés:</strong> Miért fontos a nonce használata az OCSP kérésekben?<br />
+<strong>Válasz:</strong> A nonce használata megakadályozza a visszajátszást, mivel a responder köteles visszatükrözni, így egy korábbi válasz nem fogadható el új kérésre.</p>
+<h4>7. Összefoglalás</h4>
+<ul>
+<li><strong>PKI</strong>: a nyilvános kulcs és az identitás közti kötés hitelesítését, terjesztését és életciklus-gazdálkodását biztosító keretrendszer.</li>
+<li><strong>CA</strong>: a bizalmi horgony, amely tanúsítványokat ír alá; a <strong>bizalmi lánc gyökere</strong>, nem a lánc vége.</li>
+<li><strong>RA</strong>: a CA hitelesített közvetítője, amely a kérelmező identitását ellenőrzi.</li>
+<li><strong>Tanúsítvány</strong>: X.509-formátumú, aláírt dokumentum; tartalmazza a nyilvános kulcsot, az alanyt, az érvényességi időt és a kibocsátót — titkos kulcsot nem.</li>
+<li><strong>Kulcspár</strong>: a nyilvános kulcs szabadon terjeszthető és visszafejtést/ellenőrzést tesz lehetővé; a titkos kulcs birtokosa igazolja az identitását.</li>
+<li><strong>CRL</strong>: időszakosan kiadott, aláírt visszavonási lista — egyszerű, de méret- és frissességkorlátos.</li>
+<li><strong>OCSP</strong>: online, célzott állapotlekérdezés — gyorsabb és kisebb forgalom, cserébe a responder elérhetőségétől és a válasz frissességétől függ.</li>
+</ul>
+<p>A teljes rendszer biztonsága tehát nem egyetlen technológiai elem működésén, hanem a bizalmi lánc felépítésén, a kulcsok védelmén, a visszavonás időszerű kezelésén és a szabványosok (X.509, PKCS) betartásán múlik.</p>
+<h3>A PKI hierarchikus felépítése: gyökér hitelesítési hatóság (Root CA), köztes CA-k…</h3>
+<p>A PKI-ben a bizalom nem lappang: a tanúsítványok <strong>hierarchikus</strong> szerkezete teszi lehetővé, hogy egyetlen, előre rögzített bizalmi horgonyból kiindulva juthassunk el bármelyik végfelhasználói tanúsítványig. A hierarchia nem pusztán adminisztrációs kényelem: a bizalom értékét fokozatosan, lépcsőzetesen adja tovább, miközben egy-egy szint kompromittálásának hatása lokalizálható marad.</p>
+<h4>1. A gyökér hitelesítési hatóság</h4>
+<p>A <strong>Root CA</strong> a hierarchia csúcsán álló hatóság, amelynek tanúsítványa <strong>önaláírt</strong>: saját titkos kulcsával írja alá a saját nyilvános kulcsához kötött azonosítóadatokat. Ez az önaláírás nem „bizonyíték", hanem <strong>bizalmi horgony</strong>: a tanúsítvány érvényessége nem a láncból, hanem attól függ, hogy a függő rendszer trust store-jában szerepel-e. A gyökér nem ír alá közvetlenül végfelhasználói tanúsítványokat; a feladata a köztes hatóságok hitelesítése.</p>
+<p>Mivel a gyökér kompromittálása az egész rendszert fenyegeti, a gyakorlatban <strong>offline</strong> tárolják: hálózatról leválasztott, fizikailag őrzött környezetben. A gyökér titkos kulcsának létrehozását és használatát ünnepélyes <strong>kulcsünnepély (key ceremony)</strong> keretében dokumentálják: jelenlévő tanúk, lépésenkénti jóváhagyás, HSM-be való betöltés, és a kulcs biztonságos mentése kizárólag lezárt (sealed) formában.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a Root CA szerepe a PKI hierarchiában?<br />
+<strong>Válasz:</strong> A Root CA a hierarchia csúcsán áll, önaláírt tanúsítvánnyal rendelkezik, és a köztes hatóságok hitelesítéséért felelős.</p>
+<p><strong>Kérdés:</strong> Miért tárolják a gyökér hitelesítési hatóságot offline?<br />
+<strong>Válasz:</strong> Mert a gyökér kompromittálása az egész rendszert fenyegeti, ezért offline, fizikailag őrzött környezetben tárolják.</p>
+<p><strong>Kérdés:</strong> Mi a kulcsünnepély szerepe?<br />
+<strong>Válasz:</strong> A kulcsünnepély keretében dokumentálják a gyökér titkos kulcsának létrehozását és használatát, biztosítva a folyamat átláthatóságát.</p>
+<h4>2. A köztes hitelesítési hatóságok</h4>
+<p>A <strong>köztes (intermediate) CA</strong> olyan alárendelt hatóság, amelynek tanúsítványát a gyökér vagy egy másik köztes CA írja alá. Két előnye döntő:</p>
+<ul>
+<li><strong>Lokalizáció:</strong> ha egy köztes CA kulcsa kompromittálódik, a gyökér azonnal visszavonhatja azt; a többi ág érintetlen marad.</li>
+<li><strong>Skálázhatóság:</strong> a szervezet külön köztes hatóságot állíthat fel például belső CA-ra, partneri CA-ra vagy adott doménre, anélkül hogy a gyökérhez hozzá kellene nyúlni.</li>
+</ul>
+<p>A köztes CA-ra a <code>basicConstraints</code> kiterjesztésben <code>CA:TRUE</code> kerül, a <code>pathLenConstraint</code> pedig megmondja, hány további köztes szintet engedhet meg alatta — ez a szabály a túl hosszú, indokolatlanul mély láncok kialakulását akadályozza.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a köztes CA szerepe a PKI hierarchiában?<br />
+<strong>Válasz:</strong> A köztes CA alárendelt hatóság, amelynek tanúsítványát a gyökér vagy egy másik köztes CA írja alá.</p>
+<p><strong>Kérdés:</strong> Milyen előnyei vannak a köztes CA használatának?<br />
+<strong>Válasz:</strong> A köztes CA előnyei közé tartozik a lokalizáció, mivel a gyökér azonnal visszavonhatja a kompromittálódott köztes CA kulcsát, és a skálázhatóság, amely lehetővé teszi különböző köztes hatóságok létrehozását.</p>
+<p><strong>Kérdés:</strong> Mi a <code>pathLenConstraint</code> szerepe?<br />
+<strong>Válasz:</strong> A <code>pathLenConstraint</code> megmondja, hány további köztes szintet engedhet meg a köztes CA alatt, ezzel megakadályozva a túl hosszú láncok kialakulását.</p>
+<h4>3. A végfelhasználói tanúsítványok</h4>
+<p>A <strong>végfelhasználói (end-entity) tanúsítvány</strong> a lánc levele: a nyilvános kulcsot köti egy konkrét alanyhoz (webkiszolgáló, kódaláíró, e-mail-felhasználó). Tartalmazza a nyilvános kulcsot, az alanyt, az érvényességi időt, a kibocsátót és a kibocsátó aláírását. A gyakorlatban a <code>keyUsage</code> és <code>extendedKeyUsage</code> kiterjesztések szűkítik a felhasználási kört (pl. csak digitális aláírás, csak kliens-hitelesítés).</p>
+<h4>4. A bizalmi lánc kialakulása és ellenőrzése – mit lát a kliens?</h4>
+<p>Ez a pont a legtöbb félreértés forrása, ezért érdemes pontosan elkülöníteni a lépéseket.</p>
+<p><strong>Láncépítés.</strong> TLS-kézfogáskor a kiszolgáló elküldi a saját tanúsítványát <strong>és a köztes tanúsítványokat</strong> — de <strong>nem</strong> a gyökértanúsítványt. A gyökér a kliens trust store-jában található, helyben. A kliens a tanúsítványok <code>issuer</code>/<code>subject</code> nevei és az aláírások alapján összefűzi a láncot; ha valamelyik köztes tanúsítvány hiányzik, az <code>Authority Information Access</code> (AIA) kiterjesztésben megadott helyről tölti le.</p>
+<p><figure class="diagram" data-diagram-index="2"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/LL1B3W8X3DrpYYuraxd0BCma765EW4pL6WPZMsPZlBiG8IAxHz-ldKKTQzg2yS69W0s4KU5b8Bz1EOak-c3yujq5MfsYlJcAXwDvcofRa7Va9XECgqLMkf3Fx9xOVJSsYIJagapdEtgjWAxHQShXMLwBZUEfXKt0-4meAk1_hgPE2x5g9YY5_bWm04L5td2b0hkHz55ztGdQ-jcg7C3CsJQVxWC0" /></figure></p>
+<p><strong>A bizalmi horgony kiválasztása.</strong> A gyökértanúsítvány <strong>nem része</strong> a validált útnak: a kliens helyi szabályai (bizalmi lista, név szerinti egyezés) választják ki. Emiatt a gyökér önaláírását a gyakorlatban <strong>nem</strong> ellenőrizzük láncbeli tanúsítványként — a horgony eleve bizalomra szorul.</p>
+<p><strong>Egyes tanúsítványok validálása.</strong> A lánc minden tagjára (a horgony kivételével) külön ellenőrzés vonatkozik: az aláírás helyessége az issuer kulcsával, az érvényességi idő, a <code>basicConstraints</code> <code>CA:TRUE</code> értéke, a <code>pathLenConstraint</code>, a <code>keyUsage</code>, valamint a <strong><code>nameConstraints</code></strong> kiterjesztés. Ez utóbbi RFC 5280 szerint <strong>kritikus</strong> kiterjesztés: ha egy köztes CA csak <code>example.com</code> aldomainjeire korlátozható, az ezen kívül kiállított tanúsítványokat a kliensnek el kell utasítania.</p>
+<p><strong>Visszavonási állapot.</strong> Ez külön, a láncépítéstől független lépés: a kliens a CRL-t letölti vagy OCSP-nélekérdezést küld, és csak ezután dönt a tanúsítvány használhatóságáról.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a végfelhasználói tanúsítvány szerepe?<br />
+<strong>Válasz:</strong> A végfelhasználói tanúsítvány a lánc levele, amely a nyilvános kulcsot egy konkrét alanyhoz köti.</p>
+<p><strong>Kérdés:</strong> Mi történik, ha egy köztes tanúsítvány hiányzik a láncból?<br />
+<strong>Válasz:</strong> A kliens az <code>Authority Information Access</code> (AIA) kiterjesztésben megadott helyről tölti le a hiányzó köztes tanúsítványt.</p>
+<p><strong>Kérdés:</strong> Miért nem ellenőrizzük a gyökértanúsítvány önaláírását a láncban?<br />
+<strong>Válasz:</strong> Mert a gyökértanúsítvány nem része a validált útnak, és a horgony eleve bizalomra szorul.</p>
+<h4>5. Kulcstárolás és HSM</h4>
+<p>A <strong>HSM (Hardware Security Module)</strong> fizikai eszköz, amelyben a kulcsok generálása, tárolása és a kriptográfiai műveletek (aláírás, titkosítás) tamper-reszisztens környezetben zajlanak. Előnye a fizikai védelem és a megfelelőség (FIPS 140-2/140-3, PKCS#11 interfész); hátránya a költség és az integrációs bonyolultság. A gyakorlatban a CA-k <strong>titkos kulcsa HSM-ben marad</strong>, és a HSM csak az aláíró műveletet végzi el – a kulcs soha nem kerül ki a védett határon.</p>
+<p>A legbiztonságosabb konfigurációban a gyökér-kulcsot <strong>m-of-n kvórummal</strong> aktiválják: a kulcsot hány ember (n) birtokolja titkosan megosztva, és csak ha közülük legalább m (például 3 fő 5-ből) együtt képezi ki a visszaállítható aktiváló anyagot, válik használhatóvá. A kvórum tehát <strong>kulcstulajdonosokon</strong> alapul, nem pusztán „három vagy több kulcs" jelenlétén.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a HSM fő funkciója?<br />
+<strong>Válasz:</strong> A HSM kulcsok generálása, tárolása és kriptográfiai műveletek végrehajtása tamper-reszisztens környezetben.</p>
+<p><strong>Kérdés:</strong> Mi a m-of-n kvórum lényege a HSM aktiválásakor?<br />
+<strong>Válasz:</strong> A kulcs aktiválásához legalább m kulcstulajdonosnak kell együtt dolgoznia, akik titkosan birtokolják a kulcsot.</p>
+<p><strong>Kérdés:</strong> Milyen hátrányai vannak a HSM használatának?<br />
+<strong>Válasz:</strong> A HSM hátrányai közé tartozik a költség és az integrációs bonyolultság.</p>
+<h4>6. A tanúsítványtár</h4>
+<p>A <strong>tanúsítványtár (certificate repository)</strong> az a központi tároló, amelyben a kiállított tanúsítványok, a CRL-ek és az OCSP-válaszok elérhetők. Megvalósítható LDAP- vagy X.500-alapú könyvtárként, illetve webes repositoryként. A tanúsítvány <code>CRLDistributionPoints</code> és <code>AIA</code> kiterjesztései mutatják meg a klienseknek, hol keresendők ezek az objektumok.</p>
+<p>Fontos különbség: a <strong>tanúsítványtár a terjesztés rétege</strong>, míg a <strong>visszavonási infrastruktúra</strong> (CRL-kibocsátás, OCSP-responder) a <em>döntési</em> réteg. A repository tehát nem „dönt" a tanúsítvány érvényességéről, hanem a döntéshez szükséges adatokat szolgáltatja.</p>
+<p>Egy egyszerűsített adatszerkezet:</p>
+<pre><code class="language-sql">CREATE TABLE Certificates (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    subject VARCHAR(255),
+    issuer VARCHAR(255),
+    valid_from DATETIME,
+    valid_to DATETIME,
+    serial_number VARCHAR(64),   -- a visszavonás kulcsa
+    public_key TEXT,
+    revoked BOOLEAN DEFAULT FALSE
+);
+</code></pre>
+<p>A <code>serial_number</code> egyedi azonosítóként szolgál: a CRL és az OCSP is erre hivatkozik, amikor egy konkrét tanúsítvány állapotát jelzi. A <code>revoked</code> mező a gyors állapotkeresést teszi lehetővé, a tanúsítványtár azonban nem helyettesíti a hitelesített visszavonási forrást.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi található a tanúsítványtárban?<br />
+<strong>Válasz:</strong> A tanúsítványtárban a kiállított tanúsítványok, a CRL-ek és az OCSP-válaszok találhatók.</p>
+<p><strong>Kérdés:</strong> Mi a különbség a tanúsítványtár és a visszavonási infrastruktúra között?<br />
+<strong>Válasz:</strong> A tanúsítványtár a terjesztés rétege, míg a visszavonási infrastruktúra a döntési réteg.</p>
+<p><strong>Kérdés:</strong> Mi a szerepe a <code>serial_number</code> mezőnek a tanúsítványtárban?<br />
+<strong>Válasz:</strong> A <code>serial_number</code> egyedi azonosítóként szolgál, amelyre a CRL és az OCSP hivatkozik a tanúsítvány állapotának jelzésére.</p>
+<h4>7. A hitelesítési út szabályai</h4>
+<p>A validáció szabályai összefoglalva:</p>
+<ul>
+<li>Az útnak a bizalmi horgonyig kell vezetnie; a horgony maga nem validálandó elem.</li>
+<li>Minden láncbeli tanúsítvány aláírásának hitelesnek kell lennie az issuer kulcsával.</li>
+<li>A <code>pathLenConstraint</code> korlátozza a köztes CA-k számát.</li>
+<li>A <code>nameConstraints</code> (kritikus) megköti a kibocsátható alanynevek területét.</li>
+<li>A végfelhasználói tanúsítvány nem lehet lejárt vagy visszavont.</li>
+<li><strong>Cross-certification</strong> esetén két önálló CA között létesül bizalmi átjárás: az egyik gyökér tanúsítványt ad a másik gyökér nyilvános kulcsára, így a két rendszer tanúsítványai kölcsönösen elfogadhatók. A lánc ekkor nem egyetlen tiszta fát, hanem keresztezett szerkezetet alkot – ezért a validálónak a szabályoknak meg kell engedniük ezt az alakot.</li>
+</ul>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a hitelesítési út legfontosabb szabálya?<br />
+<strong>Válasz:</strong> Az útnak a bizalmi horgonyig kell vezetnie, a horgony maga nem validálandó elem.</p>
+<p><strong>Kérdés:</strong> Mi a szerepe a <code>pathLenConstraint</code>-nek?<br />
+<strong>Válasz:</strong> A <code>pathLenConstraint</code> korlátozza a köztes CA-k számát.</p>
+<p><strong>Kérdés:</strong> Mi történik cross-certification esetén?<br />
+<strong>Válasz:</strong> Cross-certification esetén két önálló CA között bizalmi átjárás létesül, így a két rendszer tanúsítványai kölcsönösen elfogadhatók.</p>
+<h4>Összefoglalás</h4>
+<ul>
+<li><strong>Root CA</strong>: önaláírt, bizalmi horgony, offline tárolva, kulcsünnepélylyel kezelve.</li>
+<li><strong>Intermediate CA</strong>: a gyökér és a levelek közötti hid; kompromittálás lokalizálható, <code>pathLenConstraint</code> és <code>nameConstraints</code> korlátozza.</li>
+<li><strong>Végfelhasználói tanúsítvány</strong>: a lánc levele, szűkített felhasználási körrel.</li>
+<li><strong>Bizalmi lánc</strong>: szerkesztés (láncfűzés + horgonyválasztás), validálás és visszavonási lekérdezés – három külön lépés.</li>
+<li><strong>HSM</strong>: a titkos kulcsok fizikai védelme, m-of-n kvórummal aktiválva.</li>
+<li><strong>Tanúsítványtár</strong>: a kiállított objektumok terjesztési rétege, amelyet az AIA/CRLDP kiterjesztések jelölnek ki.</li>
+</ul>
+<h3>A PKI működési folyamata: regisztráció és azonosítás, kulcspár generálása (RSA, ECC)…</h3>
+<p>A PKI-t gyakran egyetlen nagy architektúraként szokás leírni, hol van a gyökér, hány köztes hatóság működik, milyen a bizalmi hierarchia. Érdemes azonban a másik oldalról is ránézni: a PKI elsősorban egy <strong>folyamat</strong>, amelynek van kezdete, középpontja és vége, és amelynek minden egyes lépése egy-egy konkrét technikai műveletet és egy-egy döntést tartalmaz. Ez a fejezet azt követi végig, hogy egy tanúsítvány hogyan születik, hogyan válik hozzáférhetővé, és hogyan vonható vissza — vagyis a gyakorlatban leggyakrabban felmerülő kérdésre ad választ: <strong>„most éppen hol tart a kérelmem?"</strong></p>
+<h4>1. Regisztráció és azonosítás</h4>
+<p>Minden tanúsítványkiállítás egy döntéssel kezdődik: <em>bizonyítható-e, hogy a kérelmező az, akinek magát mondja?</em> Ezt a döntést a <strong>regisztrációs hatóság (RA)</strong> hozza meg, a CA megbízásából.</p>
+<p>Az azonosítás többnyire három réteget ölel fel. Az első a <strong>dokumentumalapú ellenőrzés</strong>: személyi okmány, cégjegyzékbejegyzés, bankszámla vagy hatósági igazolás. A második a <strong>távközlési megerősítés</strong>: e-mailre vagy SMS-re küldött egyszeri kód, amely bizonyítja, hogy a kérelmező birtokolja az adott csatornát. A harmadik a <strong>biometrikus vagy előzetes regisztráció</strong> alapú azonosítás, amelyet ott alkalmaznak, ahol a kockázat magas (pl. e-állampapír, kódaláírási kulcsok).</p>
+<p>Az RA ezen túl a <strong>kulcspár tulajdonságait</strong> is ellenőrzi: a megfelelő kulkshossz, az engedélyezett algoritmus (RSA/ECDSA), a <code>keyUsage</code> és <code>extendedKeyUsage</code> kiterjesztések összhangja a kért felhasználási céllal. Fontos elv: az RA <strong>nem bocsát ki</strong> tanúsítványt, hanem vagy jóváhagyja a kérelmet, vagy elutasítja — az utóbbi esetben indoklással. Az elutasítási ok dokumentálása később, auditkor vagy konfliktus esetén fontos.</p>
+<p><figure class="diagram" data-diagram-index="3"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/JOyz3i8m34RtdC8NGEmTKAEEtIekO4eeeVcHaXGflGL7oCZ0r8tLubwaA4BTBB_tsVfg7z25IIk6VR0EMdeweRIOFu-owNWP6ixO1iFka1bKq8b1-ZauIhsanSFuSuHccMPd6wc0pzPOJwz0oKkuM1LHOoXgivvhInnkjDmfNN68sSMzK5F0aaJMyF__8nfwho3R9i8eJxRtb5QFrSASSxal" /></figure></p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a regisztrációs hatóság (RA) feladata?<br />
+<strong>Válasz:</strong> Az RA hozza meg a döntést arról, hogy bizonyítható-e, hogy a kérelmező az, akinek magát mondja.</p>
+<p><strong>Kérdés:</strong> Milyen három rétegből áll az azonosítás folyamata?<br />
+<strong>Válasz:</strong> A három réteg a dokumentumalapú ellenőrzés, a távközlési megerősítés és a biometrikus vagy előzetes regisztráció alapú azonosítás.</p>
+<p><strong>Kérdés:</strong> Miért fontos az elutasítási ok dokumentálása?<br />
+<strong>Válasz:</strong> Az elutasítási ok dokumentálása fontos auditkor vagy konfliktus esetén.</p>
+<h4>2. Kulcspár generálása</h4>
+<p>A kulcspár generálása az a lépés, amelyet célszerű <strong>az alany gépén</strong> elvégezni: így a titkos kulcs soha nem utazik a hálózaton, és a CA sosem látja.</p>
+<p><strong>RSA esetén</strong> a generálás a nagy számok felbontásának nehézségén alapul. A teljes folyamat egy tanulságos kis példán, 61 és 53 prímszámmal:</p>
+<ul>
+<li>( n = 61 \times 53 = 3233 ) (modulus),</li>
+<li>( \phi(n) = 60 \times 52 = 3120 ),</li>
+<li>válasszunk nyilvános kitevőt: ( e = 17 ), és ellenőrizzük, hogy ( \gcd(17, 3120) = 1 ),</li>
+<li>keressük a titkos kitevőt: ( 17 \cdot d \equiv 1 \pmod{3120} ), amiből ( d = 2753 ).</li>
+</ul>
+<p>A nyilvános kulcs ((17, 3233)), a titkos ((2753, 3233)). Valódi használatban persze 2048–4096 bites modulust alkalmazunk: a fenti számok „emberi szemmel" szorzathányadosra bonthatók, a nagy méret teszi lehetetlenné a felbontást.</p>
+<p><strong>ECC esetén</strong> a kulcspár a görbe pontcsoport skaláris szorzásából származik. Válasszunk egy görbét (y^2 = x^3 + ax + b) véges mezőn, egy alappontot (G)-t, majd egy véletlen (k) számot: a titkos kulcs (k), a nyilvános kulcs a pont (P = kG). A visszafejtéshez meg kell határozni (k)-t abból, hogy ismerjük (P)-t és (G)-t — ez a <strong>diszkrét logaritmus</strong> problémája, amely az ECC biztonságának alapja.</p>
+<pre><code class="language-bash"># RSA 2048 bites kulcspár, titkos kulcs jelszavas védelemmel
+openssl genrsa -aes256 -out private_key.pem 2048
+openssl rsa -in private_key.pem -pubout -out public_key.pem
+
+# ECC (NIST P-256) kulcspár
+openssl ecparam -name prime256v1 -genkey -noout -out ec_private.pem
+</code></pre>
+<p>Az ECC egyik fő előnye itt is látható: a 256 bites P-256 kulcs a 3072 bites RSA-hoz hasonló biztonsági szintet ad, tehát <strong>kisebb méret, gyorsabb művelet, kisebb forgalom</strong>. Hátránya, hogy az ökosztémája fiatalabb, és a görbe-paraméterek helyes megválasztása (kurva-egyeztetés!) külön szakértelmet kíván.</p>
+<p><figure class="diagram" data-diagram-index="4"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuKhEIImkLWWATbIevb9GqCukpKakBZYyiCWzDI-rwF32dCCBYpKqGJ9vbPavPOSNvkKNUuFKG0HBCako4GArN53ZN9sTgMCSo5swkdPW0wqKb0vFAowkIir8BCxFopcyjWHec1ANGsfU2j0Z0000" /></figure></p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Miért célszerű a kulcspár generálását az alany gépén elvégezni?<br />
+<strong>Válasz:</strong> Mert így a titkos kulcs soha nem utazik a hálózaton, és a CA sosem látja.</p>
+<p><strong>Kérdés:</strong> Milyen matematikai problémán alapul az RSA biztonsága?<br />
+<strong>Válasz:</strong> Az RSA biztonsága a nagy számok felbontásának nehézségén alapul.</p>
+<p><strong>Kérdés:</strong> Mi a diszkrét logaritmus problémája az ECC esetén?<br />
+<strong>Válasz:</strong> A diszkrét logaritmus problémája az, hogy meg kell határozni (k)-t abból, hogy ismerjük (P)-t és (G)-t.</p>
+<h4>3. A hitelesítési kérelem (CSR) benyújtása</h4>
+<p>A <strong>CSR (PKCS#10)</strong> az a strukturált kérés, amelyben a kérelmező <em>maga</em> bizonyítja, hogy birtokolja a nyilvános kulcshoz tartozó titkos kulcsot: a kérelmet a saját titkos kulcsával írja alá. Ez a „proof of possession" mechanizmus a lánc kulcsfontosságú eleme — a CA biztos lehet benne, hogy a benyújtott nyilvános kulcs használható.</p>
+<p>A CSR tartalmazza a subject DN-t (pl. <code>CN=.alma.hu, O=Example Kft, C=HU</code>), a nyilvános kulcsot, a használt aláírási algoritmust és opcionális attribútumokat (e-mail, SAN-ek, „challenge password").</p>
+<pre><code class="language-bash">openssl req -new -key private_key.pem -out request.csr -sha256 \
+      -subj &quot;/C=HU/O=Example Kft/CN=server.example.hu&quot;
+</code></pre>
+<p>A SAN (Subject Alternative Name) kiterjesztés különösen fontos: a modern böngészők már nem a CN-t, hanem a SAN mezőt nézik, és hiányában a tanúsítvány hibásnak minősül.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a CSR szerepe a PKI folyamatában?<br />
+<strong>Válasz:</strong> A CSR bizonyítja, hogy a kérelmező birtokolja a nyilvános kulcshoz tartozó titkos kulcsot.</p>
+<p><strong>Kérdés:</strong> Milyen információkat tartalmaz a CSR?<br />
+<strong>Válasz:</strong> A CSR tartalmazza a subject DN-t, a nyilvános kulcsot, a használt aláírási algoritmust és opcionális attribútumokat.</p>
+<p><strong>Kérdés:</strong> Miért fontos a SAN kiterjesztés a modern böngészők számára?<br />
+<strong>Válasz:</strong> Mert a modern böngészők már nem a CN-t, hanem a SAN mezőt nézik, és hiányában a tanúsítvány hibásnak minősül.</p>
+<h4>4. Kibocsátás és aláírás</h4>
+<p>A CA a kérelmet a <strong>kibocsátási szabályzat (CP/CPS)</strong> alapján bírálja el: megfelel-e a profilnak, teljes-e az azonosítás, engedélyezett-e az algoritmus és a kulcshossz. Pozitív döntés esetén a CA:</p>
+<ol>
+<li>generál egy egyedi <strong>sorszámot</strong> (a visszavonás kulcsa),</li>
+<li>meghatározza az érvényességi időszakot (<code>notBefore</code>, <code>notAfter</code>),</li>
+<li>összeállítja a <code>tbsCertificate</code> struktúrát a kiterjesztésekkel együtt (<code>basicConstraints</code>, <code>keyUsage</code>, <code>extendedKeyUsage</code>, <code>AIA</code>, <code>CRLDistributionPoints</code>),</li>
+<li>kiszámolja a lenyomatot, és <strong>aláírja a saját titkos kulcsával</strong>.</li>
+</ol>
+<p>A kibocsátott tanúsítvány X.509/DER (bináris) vagy PEM (base64-armatú, szöveges) formában áll rendelkezésre. Az aláírás a CA nyilvános kulcsával bárki által ellenőrizhető — ez köti össze a bizalmi lánccal.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi alapján bírálja el a CA a kérelmet?<br />
+<strong>Válasz:</strong> A CA a kibocsátási szabályzat (CP/CPS) alapján bírálja el a kérelmet.</p>
+<p><strong>Kérdés:</strong> Milyen lépéseket tesz a CA pozitív döntés esetén?<br />
+<strong>Válasz:</strong> A CA generál egy egyedi sorszámot, meghatározza az érvényességi időszakot, összeállítja a <code>tbsCertificate</code> struktúrát és aláírja a saját titkos kulcsával.</p>
+<p><strong>Kérdés:</strong> Milyen formátumban áll rendelkezésre a kibocsátott tanúsítvány?<br />
+<strong>Válasz:</strong> A kibocsátott tanúsítvány X.509/DER (bináris) vagy PEM (base64-armatú, szöveges) formában áll rendelkezésre.</p>
+<h4>5. Publikálás</h4>
+<p>A kiállított tanúsítvány a <strong>tanúsítványtárba</strong> kerül, amely lehet LDAP-könyvtár, webes repository vagy a CA saját szolgáltatása. A publikálás célja, hogy bárki, aki ellenőrizni akarja az aláírást, hozzáférhessen a tanúsítványhoz. A tanúsítvány kiterjesztései maguk mutatják meg a klienseknek a további erőforrásokat:</p>
+<ul>
+<li><code>AIA</code> — hol érhető el a kibocsátó tanúsítványa és az OCSP-responder címe,</li>
+<li><code>CRLDistributionPoints</code> — hol tölthető le a CRL,</li>
+<li><code>Subject Information Access</code> — tanúsítvány és visszavonási információ lekérdezése.</li>
+</ul>
+<p>A gyakorlatban a tanúsítvány „közzététele" gyakran már megtörtént: a szerver a TLS-kézfogáskor maga küldi el a láncot.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Hova kerül a kiállított tanúsítvány?<br />
+<strong>Válasz:</strong> A kiállított tanúsítvány a tanúsítványtárba kerül.</p>
+<p><strong>Kérdés:</strong> Mi a tanúsítvány publikálásának célja?<br />
+<strong>Válasz:</strong> A publikálás célja, hogy bárki, aki ellenőrizni akarja az aláírást, hozzáférhessen a tanúsítványhoz.</p>
+<p><strong>Kérdés:</strong> Milyen kiterjesztések mutatják meg a klienseknek a további erőforrásokat?<br />
+<strong>Válasz:</strong> Az <code>AIA</code>, <code>CRLDistributionPoints</code> és <code>Subject Information Access</code> kiterjesztések mutatják meg a további erőforrásokat.</p>
+<h4>6. Visszavonás</h4>
+<p>A visszavonás akkor szükséges, ha a tanúsítvány érvényesnek tűnik, de használata már nem indokolt. Tipikus indoklási kódok (RFC 5280): <code>keyCompromise</code> (a titkos kulcs kiszivárgott), <code>cessationOfOperation</code> (az alany megszűnt használni), <code>affiliationChanged</code> (munkáltató váltott), <code>superseded</code> (helyettesítő tanúsítvány kiállítása), <code>unspecified</code>.</p>
+<p>A visszavonás <strong>nem egy bináris döntés, hanem időzített folyamat</strong>: a kompromittálás és a közzététel között mindig van ablak, amikor a tanúsítvány még „érvényesnek" látszik. Ennek csökkentésére a gyakorlatban <strong>rövid érvényességi idő</strong> (90–398 nap) és gyors visszavonási eljárás együtt alkalmazandó.</p>
+<pre><code class="language-bash">openssl ca -config openssl.cnf -revoke server.pem \
+           -crl_reason keyCompromise
+</code></pre>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mikor van szükség a tanúsítvány visszavonására?<br />
+<strong>Válasz:</strong> A visszavonás akkor szükséges, ha a tanúsítvány érvényesnek tűnik, de használata már nem indokolt.</p>
+<p><strong>Kérdés:</strong> Mi a visszavonás tipikus indoklási kódja, ha a titkos kulcs kiszivárgott?<br />
+<strong>Válasz:</strong> A tipikus indoklási kód <code>keyCompromise</code>.</p>
+<p><strong>Kérdés:</strong> Miért nem bináris döntés a visszavonás?<br />
+<strong>Válasz:</strong> Mert a kompromittálás és a közzététel között mindig van ablak, amikor a tanúsítvány még „érvényesnek" látszik.</p>
+<h4>7. Érvényesség ellenőrzése: OCSP és CRL</h4>
+<p>A kliens validációja két, egymástól független kérdést vet fel: <em>érvényes-e a tanúsítvány formálisan</em> (aláírás, idő, lánc), és <em>nincs-e visszavonva</em>? A másodikra két mechanizmus szolgál.</p>
+<p><strong>CRL-alapú ellenőrzéskor</strong> a kliens letölti a <code>CRLDistributionPoints</code> által megadott listát, ellenőrzi annak aláírását a kibocsátó kulcsával, majd a tanúsítvány sorszámát keresi a visszavont sorszámok listájában. Előnye, hogy a kliens <strong>önálló, offline is ellenőrizhető</strong> döntést hoz; hátránya a teljes lista mérete és a frissességi ablak.</p>
+<p><strong>OCSP-alapú ellenőrzéskor</strong> a kliens célzott kérést küld a respondernek, amely a tanúsítvány <code>CertID</code>-jét (kibocsátónév-hash, kibocsátókulcs-hash, sorszám) azonosítja, és aláírt választ ad: <em>good</em>, <em>revoked</em> (dátummal és okkóddal) vagy <em>unknown</em>.</p>
+<pre><code class="language-bash">openssl ocsp -issuer ca.pem -cert server.pem \
+             -url http://ocsp.example.hu -CAfile ca.pem
+</code></pre>
+<p>A válasz <em>nonce</em> mezője a visszajátszást akadályozza meg; a válasz <em>thisUpdate</em> ideje pedig a frissesség biztosítékát adja — ezt a kliensnek szintén ellenőriznie kell. Gyakori probléma a <strong>lágy hibakezelés</strong>: ha a responder nem érhető el, a kliens hajlamos lehet jóváhagyni az állapotlan tanúsítványt. Ennek elkerülésére alkalmazható <em>stapling</em> (a szerver a tanúsítványhoz mellékli az OCSP-választ) vagy a kliensoldali szigorúbb hibapolitika.</p>
+<p>Összességében a folyamat visszacsatol: regisztráció → kulcsgenerálás → CSR → kiállítás és aláírás → publikálás → használat → (szükség esetén) visszavonás → állapotellenőrzés. A rendszer biztonsága nem egyetlen lépés tökéletességén, hanem <strong>az lépések közötti átadás és az ellenőrzési pontok meglétéén</strong> múlik: minden továbbadáskor újra kell bizonyítani a tulajdonjogot, és minden ellenőrzéskor újra kell bizonyítani az érvényességet.</p>
+<p><figure class="diagram" data-diagram-index="5"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/LO-_3W5148VxVOefAKIla4leI0Y9VhcDh5ipiZDtujvcIuLAej3EYrbSGJT_ljzycOB5HgcFmTYTK8HPy0wvQnQJzR8h9wkvCTyb3CQV3OnWfjUeLmOBOb6Vh3TfDE45D8LWJoIQejw3-U0vrXqOmIO3bblexOdAONGDLQuSrbWXdR7_QyhYpC-Tw2F8rvL7KyyI_ROMJxWaZyA3xLlqflyydhcr3Q40K-HMqv4g23cjwM1DuR3Clxy0" /></figure></p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Milyen két kérdést vet fel a kliens validációja?<br />
+<strong>Válasz:</strong> Érvényes-e a tanúsítvány formálisan és nincs-e visszavonva?</p>
+<p><strong>Kérdés:</strong> Mi a különbség a CRL-alapú és az OCSP-alapú ellenőrzés között?<br />
+<strong>Válasz:</strong> A CRL-alapú ellenőrzés offline, míg az OCSP-alapú ellenőrzés célzott kérést küld a respondernek.</p>
+<p><strong>Kérdés:</strong> Miért fontos a válasz <em>nonce</em> mezője az OCSP válaszban?<br />
+<strong>Válasz:</strong> A válasz <em>nonce</em> mezője a visszajátszást akadályozza meg.</p>
+<p>A <strong>kulcscsere</strong> (Diffie–Hellman, ECDH) matematikai lényege röviden: mindkét fél privát számot választ, a közös érték pedig (g^{ab} \bmod p) alakban számítható ki – az egyik fél (g^a)-t küld, a másik (g^b)-t, és mindkettő felemeli a másik értékét a saját titkos kitevőjével. A támadó a kicserélt (g^a) és (g^b) értékekből nem tudja kiszámítani (g^{ab})-t, mert ehhez a <strong>diszkrét logaritmus problémáját</strong> kellene megoldania. Itt fontos a támadások pontosítása: a <strong>Pollard-rho algoritmus</strong> generikus csoportban (O(\sqrt{q})) művelettel oldja meg a diszkrét logaritmust, ezért a biztonság nem „végtelen", hanem a megfelelő méretű mező kiválasztásától függ. RSA esetén a modulust a <strong>Pollard-rho</strong> és a <strong>számfaktoriálás</strong> (legjobb ismert: NFS) fenyegeti – itt tehát a „nehezesség" a prímtényezés problémájára vezet.</p>
+<p><figure class="diagram" data-diagram-index="6"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuKfCBialKWWjJYqoH68RSO5557Jj85m5AuNqk4Gk21igQ0WMJ49L2HL4Lmir0AWwBxyaLQ4eCpsZH24_3Qx5-_2sgiFRYXLACakoyuiLiajpaej1EgeJasgv75BpKe1E1G00" /></figure></p>
+<p>A <strong>kulcs-hitelesítés</strong> a második, gyakran elfelejtett lépés. A Diffie–Hellman önmagában <strong>man-in-the-middle</strong> támadásra vulnerábilis: a támadó két külön kulcscserét folytat a felekkel. Ellenszer a rövid életű (ephemeral) DH-kulcsok <strong>aláírása</strong> a résztvevők hitelesített nyilvános kulcsával. Ha ezt <em>ephemeral</em> kulcsokkal tesszük, és a sessiont a végén titkosítva tovább folytatjuk, akkor ** PFS** (perfect forward secrecy, tökéletes előrehaladó titkosság) áll fenn: a tartós titkos kulcs későbbi kompromittálása nem teszi visszafejthetővé a rögzített forgalmat. Ezzel szemben a <strong>statikus RSA-kulcscsere</strong> (a szerver RSA-kulcsával titkosított premaster) <strong>nem ad PFS-t</strong>, mert a szerver titkos kulcsának későbbi kiszivárgása visszafejthetővé teszi a rögzített forgalmat.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a közös érték, amit a kulcscsere során számítanak ki?<br />
+<strong>Válasz:</strong> A közös érték (g^{ab} \bmod p) alakban számítható ki.</p>
+<p><strong>Kérdés:</strong> Milyen algoritmus fenyegeti a diszkrét logaritmus problémáját?<br />
+<strong>Válasz:</strong> A Pollard-rho algoritmus.</p>
+<p><strong>Kérdés:</strong> Mi a PFS jelentése és miért fontos?<br />
+<strong>Válasz:</strong> A PFS a tökéletes előrehaladó titkosságot jelenti, amely biztosítja, hogy a későbbi kompromittálás ne tegyen visszafejthetővé a rögzített forgalmat.</p>
+<p>A <strong>PKI</strong> tehát <strong>nem végez kulcscserét</strong>. A PKI feladata a nyilvános kulcsok <strong>hitelesítése és terjesztése</strong>: a tanúsítvány köti össze az identitást a nyilvános kulccsal, és így biztosítható, hogy az ephemeral DH-kulcsot aláíró fél valóban az, akinek mondja magát. A PKI tehát a kulcscsere <em>hitelesítési</em> rétege.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a PKI feladata a kulcscserében?<br />
+<strong>Válasz:</strong> A PKI feladata a nyilvános kulcsok hitelesítése és terjesztése.</p>
+<p><strong>Kérdés:</strong> Hogyan biztosítja a PKI, hogy az ephemeral DH-kulcsot aláíró fél valóban az, akinek mondja magát?<br />
+<strong>Válasz:</strong> A PKI tanúsítványok segítségével köti össze az identitást a nyilvános kulccsal.</p>
+<p><strong>Kérdés:</strong> Miért fontos a kulcscsere hitelesítési rétege?<br />
+<strong>Válasz:</strong> Mert biztosítja, hogy a kulcscsere során a résztvevők valódi identitása védett legyen.</p>
+<h4>4. Sebesség</h4>
+<p>A szimmetrikus titkosítás nagyságrendekkel gyorsabb: modern AES-NI processzoron a titkosítási sebesség több gigabit/másodpercet elérhet, míg az RSA-2048 titkos kulccsal végzett aláírás vagy visszafejtés másodpercenként csak néhány száz, kivételes esetben néhány ezer műveletet enged meg. Az ECC-256 műveletei az RSA-2048-hoz hasonló nagyságrendűek. Ezek az adatok azonban <strong>feltételfüggők</strong>: hardver, implementáció, konstans idejű (constant-time) kódolás, padding és kulcstárolás mind befolyásolja őket. A tanulság nem a pontos szám, hanem a <strong>nagyságrend</strong>: a szimmetrikus titkosítás három–négy orders of magnitude-mal olcsóbb.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Milyen sebességgel titkosít a modern AES-NI processzor?<br />
+<strong>Válasz:</strong> A titkosítási sebesség több gigabit/másodpercet elérhet.</p>
+<p><strong>Kérdés:</strong> Milyen tényezők befolyásolják a titkosítási sebességet?<br />
+<strong>Válasz:</strong> Hardver, implementáció, konstans idejű kódolás, padding és kulcstárolás.</p>
+<p><strong>Kérdés:</strong> Mekkora a különbség a szimmetrikus és az aszimmetrikus titkosítás sebessége között?<br />
+<strong>Válasz:</strong> A szimmetrikus titkosítás három–négy orders of magnitude-mal olcsóbb.</p>
+<h4>5. Digitális aláírás</h4>
+<p>Az aláírás nem titkosítás: a cél a <strong>hitelesség, a sértetlenség és a letagadhatatlanság</strong> biztosítása. A folyamat: a küldő kiszámolja az üzenet lenyomatát (pl. SHA-256), majd ezt a <strong>saját titkos kulcsával aláírja</strong> (RSA esetén PSS paddinggel). A fogadó a <strong>nyilvános kulccsal külön verify művelettel</strong> ellenőrzi az aláírást, majd összeveti a kapott lenyomatot a frissen számítottal.</p>
+<p>Két feltételt érdemes külön hangsúlyozni. Első: az aláírás <strong>csak akkor jelent valamit, ha a nyilvános kulcs előzetesen hitelesített</strong> – ezt a PKI (vagy egy másik bizalmi mechanizmus) biztosítja; ellenkező esetben bárki „aláírhat" bármit a saját kulcsával. Másodszor: az RSA-aláírás nem egyszerűen „titkosítás a titkos kulccsal" – a gyakorlatban a PSS padding és a hash-függvény biztosítja a biztonságot.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a digitális aláírás célja?<br />
+<strong>Válasz:</strong> A hitelesség, a sértetlenség és a letagadhatatlanság biztosítása.</p>
+<p><strong>Kérdés:</strong> Hogyan ellenőrzi a fogadó az aláírást?<br />
+<strong>Válasz:</strong> A fogadó a nyilvános kulccsal külön verify művelettel ellenőrzi az aláírást.</p>
+<p><strong>Kérdés:</strong> Miért fontos a nyilvános kulcs előzetes hitelesítése?<br />
+<strong>Válasz:</strong> Mert ellenkező esetben bárki „aláírhat" bármit a saját kulcsával.</p>
+<h4>6. Hibrid titkosítás</h4>
+<p>A hibrid rendszer a két világ előnyeit ötvözi: az adatot <strong>AES-sel</strong> titkosítjuk (gyorsan), a véletlenül generált <strong>session-kulcsot</strong> pedig a címzett <strong>nyilvános RSA-kulcsával</strong> (OAEP paddinggel) titkosítjuk. A címzett a saját titkos kulcsával bontja ki a session-kulcsot, majd azzal fejti vissza az adatot. Ez a séma a TLS kézfogás alapja is: aszimmetrikus rész a kulcscserére és hitelesítésre, szimmetrikus rész a tömeges adattovábbításra.</p>
+<p><figure class="diagram" data-diagram-index="7"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuKfCBialKWXEpKj9BO9oWbAJKpFBW5o8g8AkdOAZQx22bK98PabsVl7XjILPYGg9LGg9AOab-IL8geA27T5LAHId5XTdvkVfPfVc91S3LSCCHwZtpiohp2Ii6EA4iCpYugh4jDIiaama9pW0dG3q3000" /></figure></p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mivel titkosítja az adatot a hibrid rendszer?<br />
+<strong>Válasz:</strong> Az adatot AES-sel titkosítja.</p>
+<p><strong>Kérdés:</strong> Hogyan titkosítja a címzett a session-kulcsot?<br />
+<strong>Válasz:</strong> A címzett a nyilvános RSA-kulcsával titkosítja (OAEP paddinggel).</p>
+<p><strong>Kérdés:</strong> Mi a hibrid titkosítás séma alapja a TLS kézfogás során?<br />
+<strong>Válasz:</strong> Az aszimmetrikus rész a kulcscserére és hitelesítésre, a szimmetrikus rész a tömeges adattovábbításra szolgál.</p>
+<h1>a session-kulcs becsomagolása a címzett nyilvános kulcsával</h1>
+<p>wrapped = public_key.encrypt(aes_key, padding.OAEP(
+    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+    algorithm=hashes.SHA256(), label=None))
+```</p>
+<p>Az <strong>ElGamal</strong> ugyanezt a mintát más eszközökkel valósítja meg: a nyilvános kulcs (y = g^x), a titkosításhoz véletlen (k)-t választunk, és (c_1 = g^k,\ c_2 = m\cdot y^k) értékeket küldünk; a visszafejtéshez (m = c_2 \cdot c_1^{-x}) kell. Az <strong>ECC</strong> családban az <strong>ECIES</strong> a titkosítás, az <strong>ECDH</strong> a kulcscsere, az <strong>ECDSA</strong> az aláírás szerepét tölti be.</p>
+<p><figure class="diagram" data-diagram-index="8"><img class="diagram-image" alt="PlantUML diagram" data-fallback-src="https://www.plantuml.com/plantuml/svg/JOzD2i8m44RtESKi5TiBP26L65J4ZJd1a0vjCKbBaaABU7TZ_t2My-Px7rE4Y3xsrZ1jC0IGve8M3RmPf3a0EUt7BkuiXmU5W1LbyEBmH5UsTWySHDFLv2CDSKcKD2VqFyjWuA0IeNYdyPTRREp3rcOXjbOfRbAb8pctDwtRmFcQziaX1rsZIu8Dg5CYggaSnjvFulMPF3zEUWvzeC0AScNw-0i0" /></figure></p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi az ElGamal titkosítás alapelve?<br />
+<strong>Válasz:</strong> Az ElGamal titkosítás a nyilvános kulcs (y = g^x) és véletlen (k) használatával történik, ahol (c_1 = g^k) és (c_2 = m\cdot y^k) értékeket küldünk.</p>
+<p><strong>Kérdés:</strong> Milyen szerepet töltenek be az ECC család tagjai?<br />
+<strong>Válasz:</strong> Az ECC családban az ECIES a titkosítást, az ECDH a kulcscserét, az ECDSA pedig az aláírást végzi.</p>
+<p><strong>Kérdés:</strong> Milyen kulcsméretek jellemzik a szimmetrikus és aszimmetrikus titkosítást?<br />
+<strong>Válasz:</strong> A szimmetrikus titkosítás kulcsmérete 128–256 bit, míg az aszimmetrikus titkosítás esetén RSA 2048–3072 bit vagy ECC 256–384 bit használatos.</p>
+<h4>7. Összefoglalás</h4>
+<ul>
+<li><strong>Szimmetrikus titkosítás</strong>: gyors, nagy átviteli teljesítmény, de a kulcs terjesztése problémás; kulcsméret 128–256 bit.</li>
+<li><strong>Aszimmetrikus titkosítás</strong>: megoldja a kulcsterjesztést és lehetővé teszi az aláírást, de lassú; RSA 2048–3072 bit vagy ECC 256–384 bit.</li>
+<li><strong>Kulcscsere</strong>: Diffie–Hellman/ECDH, a közös érték (g^{ab}) kiszámításán alapul; biztonsága a diszkrét logaritmus nehézségétől függ.</li>
+<li><strong>Kulcs-hitelesítés</strong>: az ephemeral kulcsok aláírása; PFS csak hitelesített ephemeral kézfogással és a session további titkosításával érhető el.</li>
+<li><strong>PKI</strong>: nem kulcscsere, hanem a nyilvános kulcsok hitelesítése és terjesztése – ez teszi lehetővé a kulcscsere és az aláírás megbízhatóságát.</li>
+<li><strong>Hibrid titkosítás</strong>: aszimmetrikus kulcscsere + szimmetrikus tömeges titkosítás + opcionális aláírás – a gyakorlatban ez a helyes választás.</li>
+</ul>
+<p>@startuml
+class Encryption {
+    + symmetric(key: Key, data: Data) : EncryptedData
+    + asymmetric(publicKey: PublicKey, data: Data) : EncryptedData
+}</p>
+<p>class KeyExchange {
+    + DiffieHellman() : SharedSecret
+    + ECDH() : SharedSecret
+}</p>
+<p>class Authentication {
+    + sign(data: Data, privateKey: PrivateKey) : Signature
+    + verify(signature: Signature, publicKey: PublicKey) : boolean
+}</p>
+<p>Encryption --&gt; KeyExchange : uses
+Authentication --&gt; Encryption : uses
+@enduml</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Mi a hibrid titkosítás lényege?<br />
+<strong>Válasz:</strong> A hibrid titkosítás aszimmetrikus kulcscserét, szimmetrikus tömeges titkosítást és opcionális aláírást kombinál.</p>
+<p><strong>Kérdés:</strong> Mi a PKI szerepe a digitális kommunikációban?<br />
+<strong>Válasz:</strong> A PKI a nyilvános kulcsok és digitális tanúsítványok kezelését biztosítja, lehetővé téve a biztonságos kapcsolatok létrehozását.</p>
+<p><strong>Kérdés:</strong> Milyen protokollokat használnak a biztonságos internetes kommunikációhoz?<br />
+<strong>Válasz:</strong> A TLS (Transport Layer Security) és az SSL (Secure Sockets Layer) protokollok a legelterjedtebb módszerek a biztonságos internetes kommunikációhoz.</p>
+<h3>A PKI gyakorlati alkalmazásai és példája: TLS/SSL szerverhitelesítés és titkosított…</h3>
+<p>A PKI gyakorlati alkalmazásai és példája: TLS/SSL szerverhitelesítés és titkosított kommunikáció, S/MIME e-mail, VPN (OpenVPN, IPsec), kód-aláírás, PDF-dokumentum hitelesítés, időbélyeg; részletes példa: tanúsítványbasált HTTPS-kapcsolat beállítása OpenSSL-lel</p>
+<p>A digitális világban a biztonságos kommunikáció és az identitás hitelesítése elengedhetetlen. A Public Key Infrastructure (PKI) keretrendszere biztosítja a nyilvános kulcsok és digitális tanúsítványok kezelését, amely lehetővé teszi a felhasználók és rendszerek közötti biztonságos kapcsolatok létrehozását. A PKI számos gyakorlati alkalmazást kínál, beleértve a TLS/SSL szerverhitelesítést, a titkosított e-maileket S/MIME formátumban, a VPN megoldásokat, a kód-aláírást, a PDF-dokumentumok hitelesítését és az időbélyegzést.</p>
+<p>A TLS (Transport Layer Security) és az SSL (Secure Sockets Layer) protokollok a legelterjedtebb módszerek a biztonságos internetes kommunikációhoz. A TLS a modern, biztonságos kommunikációs protokoll, amely a régebbi SSL-t váltotta fel. A TLS kézfogás során a kliens és a szerver közötti biztonságos kapcsolat létrehozásához szükséges lépéseket hajt végre. A folyamat során a szerver hitelesíti magát a kliens előtt a digitális tanúsítvány segítségével, amelyet egy megbízható hitelesítési hatóság (CA) állított ki.</p>
+<p>A tanúsítványok a PKI alapvető elemei, amelyek a nyilvános kulcsokat az azonosított entitásokhoz kötik. A tanúsítványok X.509 formátumban készülnek, és tartalmazzák a nyilvános kulcsot, az alany nevét, a kibocsátó nevét, az érvényességi időt és a CA aláírását. A tanúsítványok érvényességét a kliens a CA nyilvános kulcsával ellenőrzi, amely biztosítja, hogy a tanúsítvány nem hamisítvány.</p>
+<p>A TLS/SSL kapcsolat beállításához OpenSSL-t használva az alábbi lépéseket kell követni:</p>
+<ol>
+<li>
+<p><strong>Kulcspár generálása</strong>: Az első lépés a szerver titkos kulcsának és a nyilvános kulcsának generálása. Ezt az alábbi parancsokkal végezhetjük el:
+   <code>bash
+   openssl genrsa -out server.key 2048
+   openssl req -new -key server.key -out server.csr -subj "/C=HU/ST=Budapest/L=Budapest/O=My Company/CN=www.example.com"</code></p>
+</li>
+<li>
+<p><strong>Tanúsítvány aláírása</strong>: A következő lépés a tanúsítvány aláírása egy CA által. Ehhez szükség van egy CA kulcsra és tanúsítványra. A CA aláírásával a tanúsítvány érvényes lesz:
+   <code>bash
+   openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 365 -sha256</code></p>
+</li>
+<li>
+<p><strong>Tanúsítványlánc ellenőrzése</strong>: A kliensnek ellenőriznie kell a tanúsítványláncot, hogy megbizonyosodjon arról, hogy a szerver hitelesített. Ezt az alábbi parancs segítségével tehetjük meg:
+   <code>bash
+   openssl s_client -connect www.example.com:443 -CAfile ca.crt</code></p>
+</li>
+</ol>
+<p>A TLS/SSL mellett a PKI másik fontos alkalmazása az S/MIME, amely lehetővé teszi az e-mailek titkosítását és digitális aláírását. Az S/MIME működése során a feladó a címzett nyilvános kulcsát használja az üzenet titkosítására, míg a digitális aláírás a feladó titkos kulcsával történik. A címzett a saját titkos kulcsával visszafejti az üzenetet, és a feladó nyilvános kulcsával ellenőrzi az aláírást.</p>
+<p>A VPN (Virtual Private Network) technológiák, mint például az OpenVPN és az IPsec, szintén a PKI-ra támaszkodnak a biztonságos kapcsolatok létrehozásához. Az OpenVPN SSL/TLS protokollt használ a kulcscseréhez, míg az IPsec a forgalom titkosítására és hitelesítésére szolgál. Az IPsec két üzemmódot kínál: transport és tunnel mód, amelyek különböző alkalmazási forgatókönyvekhez illeszkednek.</p>
+<p>A kód-aláírás, amely biztosítja a szoftverek integritását és eredetiségét, szintén a PKI keretein belül működik. A digitális aláírások megakadályozzák a szoftverek manipulálását, és biztosítják a felhasználók számára, hogy a szoftverek megbízható forrásból származnak.</p>
+<p>A PDF-dokumentumok hitelesítése digitális aláírások segítségével történik, amelyek garantálják a dokumentumok sértetlenségét és a szerző azonosíthatóságát. Az időbélyegzés lehetővé teszi a digitális aláírások időben történő érvényesítését, amely fontos a jogi és üzleti dokumentumok esetében.</p>
+<p>Összességében a PKI kulcsszerepet játszik a modern digitális kommunikáció biztonságában, lehetővé téve a felhasználók és rendszerek közötti biztonságos interakciókat. A TLS/SSL, S/MIME, VPN, kód-aláírás, PDF hitelesítés és időbélyegzés mind a PKI alapelveire épülnek, és biztosítják a digitális világban szükséges biztonságot és megbízhatóságot.</p>
+<h4>Ellenőrző kérdések</h4>
+<p><strong>Kérdés:</strong> Milyen lépéseket kell követni a TLS/SSL kapcsolat beállításához OpenSSL-lel?<br />
+<strong>Válasz:</strong> A lépések a kulcspár generálása, a tanúsítvány aláírása egy CA által, és a tanúsítványlánc ellenőrzése.</p>
+<p><strong>Kérdés:</strong> Mi az S/MIME szerepe a PKI keretein belül?<br />
+<strong>Válasz:</strong> Az S/MIME lehetővé teszi az e-mailek titkosítását és digitális aláírását a feladó és a címzett kulcsainak használatával.</p>
+<p><strong>Kérdés:</strong> Milyen technológiák támaszkodnak a PKI-ra a biztonságos kapcsolatok létrehozásához?<br />
+<strong>Válasz:</strong> A VPN technológiák, mint például az OpenVPN és az IPsec, a PKI-ra támaszkodnak a biztonságos kapcsolatok létrehozásához.</p>
+</article>
+<footer class="doc-footer">Generálva: 2026-10-27 20:14</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/dist/plantuml-encoder.min.js"></script>
+<script>
+(function () {
+    var server = "https://www.plantuml.com/plantuml/svg";
+    var diagrams = ["@startuml\nclass PKI {\n    + createBinding()\n    + authenticate()\n    + distributeKeys()\n    + monitorUsability()\n    + revokeKeys()\n}\n@enduml", "@startuml\nclass CA {\n    + issueCertificate()\n    + signCertificate()\n    + createPolicy()\n    + revokeCertificate()\n}\n@enduml", "@startuml\nclass Client {\n    +trustStore\n    +validateChain()\n}\n\nclass Server {\n    +sendCertificate()\n}\n\nclass Certificate {\n    +issuer\n    +subject\n    +signature\n}\n\nClient --> Server : requests certificate\nServer --> Client : sends certificate + intermediate certificates\nClient --> Certificate : validates chain\n@enduml", "@startuml\nactor Kérelmező\nactor RA\nactor CA\n\nKérelmező -> RA : Regisztrációs kérelem\nRA -> Kérelmező : Azonosítási folyamat\nRA -> CA : Kérelem jóváhagyása/elutasítása\nCA -> RA : Tanúsítvány kibocsátás\n@enduml", "@startuml\nclass RSA {\n  +kulcspárGenerálás()\n  +nyilvánosKulcs()\n  +titkosKulcs()\n}\n\nclass ECC {\n  +kulcspárGenerálás()\n  +nyilvánosKulcs()\n  +titkosKulcs()\n}\n\nRSA --> ECC : \"Összehasonlítás\"\n@enduml", "@startuml\nactor Kliens\nactor OCSP\nactor CRL\n\nKliens -> OCSP : Kérés a tanúsítvány állapotáról\nOCSP -> Kliens : Válasz (good/revoked/unknown)\n\nKliens -> CRL : Letöltés a CRLDistributionPoints-ból\nCRL -> Kliens : Visszavont sorszámok listája\n@enduml", "@startuml\nactor User1\nactor User2\nUser1 -> User2 : g^a\nUser2 -> User1 : g^b\nUser1 -> User1 : g^b^a\nUser2 -> User2 : g^a^b\nnote right of User1 : Közös titkos kulcs: g^{ab}\n@enduml", "@startuml\nactor Sender\nactor Receiver\nSender -> AES : Titkosítja az adatot\nSender -> RSA : Titkosítja a session-kulcsot\nReceiver -> RSA : Kinyitja a session-kulcsot\nReceiver -> AES : Visszafejti az adatot\n@enduml", "@startuml\nclass ElGamal {\n    + encrypt(m: Message, k: Random) : Ciphertext\n    + decrypt(c: Ciphertext, x: SecretKey) : Message\n}\n\nclass ECC {\n    + ECIES : Encryption\n    + ECDH : KeyExchange\n    + ECDSA : Signature\n}\n\nElGamal --> ECC : uses\n@enduml"];
+
+    function renderWithEncoder(source, image) {
+        try {
+            if (window.plantumlEncoder && window.plantumlEncoder.encode) {
+                var encoded = window.plantumlEncoder.encode(source);
+                image.src = server + "/" + encoded;
+                return true;
+            }
+        } catch (e) {
+            /* fall back to the server side URL */
+        }
+        return false;
+    }
+
+    diagrams.forEach(function (source, index) {
+        var figure = document.querySelector(
+            'figure.diagram[data-diagram-index="' + index + '"]'
+        );
+        if (!figure) {
+            return;
+        }
+        var image = figure.querySelector("img");
+        var ok = renderWithEncoder(source, image);
+        if (!ok && image.getAttribute("data-fallback-src")) {
+            image.src = image.getAttribute("data-fallback-src");
+        }
+        image.onerror = function () {
+            figure.innerHTML =
+                '<figcaption>A diagram nem tölthető be (PlantUML szerver hiba).</figcaption>';
+        };
+    });
+})();
+</script>
+</body>
+</html>
